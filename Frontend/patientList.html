@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareFlex Dashboard</title>
+    <link rel="stylesheet" href="/Frontend/Styles/patientList.css">
+
+</head>
+<body>
+    <nav>
+        <div class="logo">CareFlex</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Monitoring Dashboard</a>
+            <button class="login-btn">Login</button>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="doctor-profile">
+            <img src="divya.png" alt="Doctor Profile" class="doctor-image">
+            <div class="doctor-name">Dr. Sarah Mitchell</div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" placeholder="Search Name" class="search-input" id="searchInput">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+
+        <table class="patient-table">
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Condition</th>
+                </tr>
+            </thead>
+            <tbody id="patientTableBody">
+                <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Sample patient data
+        const patients = [
+            { id: 'AB123', name: 'prasad Patil', contact: '9297293722', condition: 'Normal' },
+            { id: 'AB123', name: 'tejas Patil', contact: '9297293722', condition: 'Normal' },
+            { id: 'AB123', name: 'Swadesh Patil', contact: '9297293722', condition: 'Need for CheckUp' }
+        ];
+
+        // Function to render patient table
+        function renderPatients(patientsData) {
+            const tableBody = document.getElementById('patientTableBody');
+            tableBody.innerHTML = '';
+
+            patientsData.forEach(patient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.contact}</td>
+                    <td class="${patient.condition === 'Normal' ? 'condition-normal' : 'condition-checkup'}">${patient.condition}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Initialize table
+        renderPatients(patients);
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredPatients = patients.filter(patient => 
+                patient.name.toLowerCase().includes(searchTerm) ||
+                patient.id.toLowerCase().includes(searchTerm)
+            );
+            renderPatients(filteredPatients);
+        });
+    </script>
+</body>
+</html>

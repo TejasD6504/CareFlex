@@ -1,0 +1,163 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4a5568;
+}
+
+.login-btn {
+    background: #2f855a;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.patient-info {
+    background: #f0fff4;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #c6f6d5;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.patient-info p {
+    margin: 0.5rem 0;
+    color: #2d3748;
+    font-size: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.metric-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1.5rem;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.metric-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a202c;
+}
+
+.metric-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #48bb78;
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    background: linear-gradient(to bottom, 
+        transparent calc(100% - 30px),
+        rgba(226, 232, 240, 0.3) calc(100% - 30px)
+    );
+}
+
+.chart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(to right, transparent 49px, #e2e8f0 50px),
+        linear-gradient(to bottom, transparent 49px, #e2e8f0 50px);
+    background-size: 50px 50px;
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .grid {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        padding: 1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .metric-card {
+        padding: 1rem;
+    }
+
+    .chart-container {
+        height: 180px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

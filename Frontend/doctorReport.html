@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareFlex Dashboard</title>
+    <link rel="stylesheet" href="/Frontend/Styles/doctorReport.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  
+</head>
+<body>
+    <header class="header">
+        <div class="logo">CareFlex</div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Monitoring Dashboard</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="patient-info">
+            <p>Patient Name - Swadesh Patil</p>
+            <p>Patient ID - AB123</p>
+            <p>Contact - 829392828</p>
+        </div>
+
+        <div class="grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Recovery Rate</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="recoveryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Heart Rate</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="heartRateChart"></canvas>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">EMG</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="emgChart"></canvas>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">GSR</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="gsrChart"></canvas>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Bio-Impedance</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="bioChart"></canvas>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Blood Pressure</span>
+                    <span class="metric-value">60%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="bpChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartConfig = {
+            type: 'line',
+            data: {
+                labels: ['', '', '', '', '', ''],
+                datasets: [
+                    {
+                        data: [20, 25, 40, 38, 39, 45],
+                        borderColor: '#2D3748',
+                        backgroundColor: 'transparent',
+                        pointBackgroundColor: '#2D3748',
+                        pointBorderColor: '#2D3748',
+                        pointRadius: 4,
+                        pointHoverRadius: 4,
+                        borderWidth: 2,
+                        tension: 0.4
+                    },
+                    {
+                        data: [22, 35, 30, 38, 35, 40],
+                        borderColor: '#90CDF4',
+                        backgroundColor: 'transparent',
+                        pointBackgroundColor: '#90CDF4',
+                        pointBorderColor: '#90CDF4',
+                        pointRadius: 4,
+                        pointHoverRadius: 4,
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false,
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#E2E8F0',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        };
+
+        const createChart = (canvasId) => {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            return new Chart(ctx, JSON.parse(JSON.stringify(chartConfig)));
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ['recoveryChart', 'heartRateChart', 'emgChart', 'gsrChart', 'bioChart', 'bpChart']
+                .forEach(createChart);
+        });
+
+        // Handle responsiveness
+        window.addEventListener('resize', () => {
+            Chart.instances.forEach(chart => chart.resize());
+        });
+    </script>
+</body>
+</html>
