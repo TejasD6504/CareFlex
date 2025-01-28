@@ -1,4 +1,4 @@
-step1: go to Terminal>New Terminal and write command "npm install mysql express path mysql body-parser"
+step1: go to Terminal>New Terminal and write command "npm install mysql express path mysql body-parser nodemon"
 
 step 2: In app.js from line 14 to line 18 do changes according to your my sql software
 
