@@ -1,0 +1,36 @@
+step1: go to Terminal>New Terminal and write command "npm install mysql express path mysql body-parser"
+
+step 2: In app.js from line 14 to line 18 do changes according to your my sql software
+
+
+
+
+create database Careflex;
+use Careflex;
+
+CREATE TABLE doctors (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    name VARCHAR(255) NOT NULL,        
+    contact BIGINT NOT NULL,         
+    qualification VARCHAR(255) NOT NULL, 
+    email VARCHAR(255) UNIQUE NOT NULL, 
+    password VARCHAR(255) NOT NULL,
+    doc_key VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE patient(
+    pat_id INT AUTO_INCREMENT PRIMARY KEY, 
+    pat_name VARCHAR(255) NOT NULL,        
+    pat_contact BIGINT NOT NULL,         
+    pat_email VARCHAR(255) UNIQUE NOT NULL, 
+    pat_password VARCHAR(255) NOT NULL,
+    pat_doc_key VARCHAR(255) NOT NULL,
+    pat_doc_name VARCHAR(255) NOT NULL
+);
+
+drop table doctors;
+drop table patient;
+
+
+select * from doctors;
+select * from patient;
