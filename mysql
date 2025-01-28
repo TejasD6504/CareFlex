@@ -25,7 +25,8 @@ CREATE TABLE patient(
     pat_email VARCHAR(255) UNIQUE NOT NULL, 
     pat_password VARCHAR(255) NOT NULL,
     pat_doc_key VARCHAR(255) NOT NULL,
-    pat_doc_name VARCHAR(255) NOT NULL
+    pat_doc_name VARCHAR(255) NOT NULL,
+    pat_key INT NOT NULL UNIQUE
 );
 
 drop table doctors;
