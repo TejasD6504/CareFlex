@@ -1,10 +1,3 @@
-step1: go to Terminal>New Terminal and write command "npm install mysql express path mysql body-parser nodemon"
-
-step 2: In app.js from line 14 to line 18 do changes according to your my sql software
-
-
-
-
 create database Careflex;
 use Careflex;
 
@@ -28,10 +21,19 @@ CREATE TABLE patient(
     pat_doc_name VARCHAR(255) NOT NULL,
     pat_key INT NOT NULL UNIQUE
 );
+CREATE TABLE Bio (
+   id INT,
+   biodata BIGINT,
+   dateandtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 drop table doctors;
 drop table patient;
+drop table Bio;
 
 
 select * from doctors;
 select * from patient;
+select * from Bio;

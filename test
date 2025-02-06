@@ -15,15 +15,11 @@ const bodyParser = require('body-parser');
 
 const CLIENT_ID = "LZyZ8tx2G2uz35EHEL1vGvIQWngPkfOf";
 const CLIENT_SECRET = "lAIux0ztcWGxsRrmnWF58aS7CGSdvRmhVfe5oal3z7cxus6N9UeCtAmrWhDENwFa";
-const THING_ID = "7f2fe9c1-708f-4402-8caa-c9e36b6af50a";
-const PROPERTY_IDBIOZ = "43c0f0b4-551d-4679-8035-2cffa9eb5344";
-const PROPERTY_IDECG = "c095a2f8-8bfa-4ce6-af02-f7b6708d002c";
-const PROPERTY_IDGSR = "8944062e-46d8-4306-94ae-3f43014910ad";
-
+const THING_ID = "4ef7652d-6128-4c73-a9e3-6a1da22f1ba6";
+const PROPERTY_ID = "d1754bec-2b4c-4ef9-9a54-87fff697fc25";
 
 let accessToken = "";
 let latestDistance = 0; 
-let ecgdata = 0;
 
 
 
@@ -188,7 +184,7 @@ function generateDoctorKey() {
 // Fetch access token from Arduino API
 const getAccessToken = async () => {
    try {
-     const responseBioz = await axios.post(
+     const response = await axios.post(
        "https://api2.arduino.cc/iot/v1/clients/token",
        new URLSearchParams({
          grant_type: "client_credentials",
@@ -197,113 +193,42 @@ const getAccessToken = async () => {
          audience: "https://api2.arduino.cc/iot",
        })
      );
-     accessToken = responseBioz.data.access_token;
+     accessToken = response.data.access_token;
      console.log("New Access Token:", accessToken);
    } catch (error) {
-     console.error("Error fetching token:", error.responseBioz?.data || error.message);
+     console.error("Error fetching token:", error.response?.data || error.message);
    }
  };
-
-
-
- const fetchECGData = async () => {
-   try {
-     if (!accessToken) await getAccessToken();
-
-     const responseecg = await axios.get(
-       `https://api2.arduino.cc/iot/v2/things/${THING_ID}/properties/${PROPERTY_IDECG}`,
-       { headers: { Authorization: `Bearer ${accessToken}` }}
-     );
-
-// console.log(responseBioz);
-
-     ecgdata = responseecg.data.last_value;
-
-     // Emit the updated distance to all connected clients
-     io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
-
-   } catch (error) {
-     console.error("Error fetching ultrasonic data:", error.responseecg?.data || error.message);
-   }
- };
-
-
- const fetchGSRData = async () => {
-   try {
-     if (!accessToken) await getAccessToken();
-
-     const responsegsr = await axios.get(
-       `https://api2.arduino.cc/iot/v2/things/${THING_ID}/properties/${PROPERTY_IDGSR}`,
-       { headers: { Authorization: `Bearer ${accessToken}` }}
-     );
-
-// console.log(responseBioz);
-
-     gsrdata = responsegsr.data.last_value;
-
-     // Emit the updated distance to all connected clients
-     io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
-
-   } catch (error) {
-     console.error("Error fetching ultrasonic data:", error.responseecg?.data || error.message);
-   }
- };
- 
-
-// Routes for patient dashboard
-// app.get('/patient/:id', async (req,res) => { 
-//    res.render("patientdash.ejs",{ data: latestDistance });
-// }); 4
 
 // Fetch ultrasonic data every 5 seconds
-const fetchBioData = async (id) => {
-     
-
+const fetchUltrasonicData = async () => {
    try {
      if (!accessToken) await getAccessToken();
 
-     const responseBioz = await axios.get(
-       `https://api2.arduino.cc/iot/v2/things/${THING_ID}/properties/${PROPERTY_IDBIOZ}`,
+     const response = await axios.get(
+       `https://api2.arduino.cc/iot/v2/things/${THING_ID}/properties/${PROPERTY_ID}`,
        { headers: { Authorization: `Bearer ${accessToken}` }}
      );
 
-// console.log(responseBioz);
-
-     latestDistance = responseBioz.data.last_value;
+     latestDistance = response.data.last_value;
      console.log("Ultrasonic Distance Updated:", latestDistance);
 
-     try{
-   
-      await connection.query("insert into Bio(id,biodata) values (?,?)",[id,latestDistance],(err,result) => {
-              if(err) throw err;
-
-          })
-      } catch(err){
-          console.log(err);
-      }
-
      // Emit the updated distance to all connected clients
-     io.emit("distanceUpdate", {latestDistance,ecgdata ,gsrdata});
+     io.emit("distanceUpdate", latestDistance);
    } catch (error) {
-     console.error("Error fetching ultrasonic data:", error.responseBioz?.data || error.message);
+     console.error("Error fetching ultrasonic data:", error.response?.data || error.message);
    }
  };
 
-
-app.get('/patient/:id', async (req,res) =>{
-   const { id } = req.params; 
-   res.render("doctorpview.ejs",{ data1: latestDistance });
-   setInterval(() => fetchBioData(id), 1000);
-})
-
+// Routes for patient dashboard
+app.get('/patient/:id', async (req,res) => { 
+   res.render("patientdash.ejs",{ data: latestDistance });
+}); 
 
 // Fetch ultrasonic data and update every 5 seconds
-
-setInterval(fetchGSRData, 1000);
-setInterval(fetchECGData, 1000);
-
+setInterval(fetchUltrasonicData, 5000);
 getAccessToken();
 setInterval(getAccessToken, 3500 * 1000);
 
-server.listen(5500);
+app.listen(5500);
 

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioZ Monitor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        .chart-container {
+            width: 800px;
+            height: 400px;
+            margin: 20px auto;
+            background-color: black;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time BioZ Monitor</h1>
+    <h1 id="status"></h1>
+    <p>Value: <span id="value"></span></p>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+const socket = io();
+
+socket.on('sensorDataUpdate', (data) => {
+    console.log(data);
+  const { latestDistance, ecgdata } = data;
+  console.log('Latest Distance:', latestDistance);
+  console.log('ECG Data:', ecgdata);
+});
+ // Smooth updates every 50ms
+        
+    </script>
+</body>
+</html>
