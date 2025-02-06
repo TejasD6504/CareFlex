@@ -3,8 +3,11 @@ const axios = require("axios");
 const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
+<<<<<<< HEAD
 const moment = require('moment');
 
+=======
+>>>>>>> d7955b0 (5 feb)
 
 const app = express();
 const server = http.createServer(app);
@@ -28,6 +31,10 @@ let latestDistance = 0;
 let ecgdata = 0;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d7955b0 (5 feb)
 app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -43,8 +50,11 @@ const connection = mysql.createConnection({
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> d7955b0 (5 feb)
 app.get('/', (req,res) => {
    res.render("Home.ejs");
 });
@@ -66,8 +76,11 @@ app.get('/doctor/:id', async (req,res) => {
 
 });
 
+<<<<<<< HEAD
 app.get('/doctor/:id/:patientid', async (req,res) => { 
   res.render("doctorpview.ejs");
+=======
+>>>>>>> d7955b0 (5 feb)
 
 });
 
@@ -307,6 +320,7 @@ const fetchBioData = async (id) => {
    }
  };
 
+<<<<<<< HEAD
  const PredictData = async (predict) => {
   try {
     // Generate current date and hour dynamically
@@ -343,6 +357,13 @@ app.get('/patient/:id', async (req,res) =>{
    res.render("doctorpview.ejs",{ data1: latestDistance , result : predicteddata.data});
    setInterval(() => fetchBioData(id), 1000);
    setInterval(async () => await PredictData(latestDistance) , 1000);
+=======
+
+app.get('/patient/:id', async (req,res) =>{
+   const { id } = req.params; 
+   res.render("doctorpview.ejs",{ data1: latestDistance });
+   setInterval(() => fetchBioData(id), 1000);
+>>>>>>> d7955b0 (5 feb)
 })
 
 

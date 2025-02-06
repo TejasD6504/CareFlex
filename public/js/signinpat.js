@@ -10,7 +10,11 @@ function work(){
         {
             btn.type = "submit";
         }else{
+<<<<<<< HEAD
             btn.type = "submit";
+=======
+            div.innerHTML = "Password and confirm password not matching";
+>>>>>>> d7955b0 (5 feb)
         }
     });
 }
