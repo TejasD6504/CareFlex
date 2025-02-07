@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/signinpat.css">
     <title>Document</title>
 </head>
 <body>
+    <nav class="navbar">
+        <!-- Replace 'path_to_your_logo.jpg' with your actual logo image path -->
+        <a href="#" class="navbar-brand">
+            <img src="/Images/logo.png" alt="CareFlex" class="nav-logo">
+        </a>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Monitoring Dashboard</a>
+            <a href="#" class="nav-login">Login</a>
+        </div>
+    </nav>
+
     <form action="/login/patientdata" method="post">
     Patient Name : <input type="text" name="pat_name" id="pat_name" placeholder="eg. Mr.Swadesh Jadhav">
     Patient Contact : <input type="number" name="pat_phone" id="pat_phone">

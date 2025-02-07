@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/signindoc.css">
     <title>Document</title>
 </head>
 <body>
+    <nav class="navbar">
+        <!-- Replace 'path_to_your_logo.jpg' with your actual logo image path -->
+        <a href="#" class="navbar-brand">
+            <img src="/Images/logo.png" alt="CareFlex" class="nav-logo">
+        </a>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Monitoring Dashboard</a>
+            <a href="#" class="nav-login">Login</a>
+        </div>
+    </nav>
+
     <form action="/login/doctordata" method="post">
     Doctor's Name : <input type="text" name="d_name" id="d_name" placeholder="eg. Mr.Swadesh Jadhav">
     Doctor's Contact : <input type="number" name="d_phone" id="d_phone">
