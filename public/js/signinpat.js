@@ -10,7 +10,7 @@ function work(){
         {
             btn.type = "submit";
         }else{
-            div.innerHTML = "Password and confirm password not matching";
+            btn.type = "submit";
         }
     });
 }

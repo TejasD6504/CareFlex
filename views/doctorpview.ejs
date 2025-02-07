@@ -124,6 +124,15 @@
             border-radius: 8px;
         }
 
+        .chart-containerecg{
+            width: 800px;
+            height: 400px;
+            margin: 20px auto;
+            background-color: black;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
         /* Chart Card */
         .chart-card {
             background: white;
@@ -324,12 +333,19 @@
             <canvas id="myChart"></canvas>
         </div>
 
+        <h1>Real-Time BioZ Monitor</h1>
+        <h1 id="statusecg"></h1>
+        <p>Value: <span id="valueecg"></span></p>
+        <div class="chart-containerecg">
+            <canvas id="myChartecg"></canvas>
+        </div>
+
 
 
         <div class="stats-card">
             <div class="metric-row">
                 <span class="metric-label">Recovery Rate</span>
-                <span class="metric-value">60%</span>
+                <span class="metric-value"><%= result.status %></span>
             </div>
             <div class="metric-row">
                 <span class="metric-label">Heart Rate</span>
@@ -351,13 +367,14 @@
                 <span class="metric-label">Blood Pressure</span>
                 <span class="metric-value">80 mmHg</span>
             </div>
+            <p></p>
             <p class="success-message">Everything Looks great...!! Have a Healthy Day</p>
         </div>
     </div>
 
     <div class="info-section">
         <span class="info-title">Conclusion :</span>
-        <span>Your Recovery rate is normal.</span>
+        <span><%= result.recommendation %></span>
     </div>
 
     <div class="info-section">
@@ -474,6 +491,64 @@
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, config);
 
+        const dataecg = {
+        labels: [],
+            datasets: [{
+                label: 'ecg Signal',
+                data: [],
+                borderColor: 'rgb(0, 255, 0)',
+                backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                tension: 0.1,
+                pointRadius: 0,
+                borderWidth: 1.5,
+            }]
+        };
+
+        const configecg = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white'
+                        },
+                        min: 499000,
+                        max: 500500
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white',
+                            maxTicksLimit: 10
+                        }
+                    }
+                }
+            }
+        };
+
+        const ctxecg = document.getElementById('myChartecg').getContext('2d');
+        const myChartecg = new Chart(ctxecg, configecg);
+
         const socket = io();
         socket.on("distanceUpdate", (maindata) => {
 
@@ -482,18 +557,22 @@
             let gsrdata = maindata.gsrdata;
 
 
-            // console.log('Biodata:', Biodata);
-            // console.log('ECG Data:', ecgdata);
-            console.log('GSR Data:', gsrdata);
+            console.log('Biodata:', Biodata);
+            console.log('ECG Data:', ecgdata);
+            // console.log('GSR Data:', gsrdata);
 
 
             const statusElement = document.getElementById("status");
             const valueElement = document.getElementById("value");
-
+            const statusElementecg = document.getElementById("statusecg");
+            const valueElementecg = document.getElementById("valueecg");
             // console.log("New Value = ", Biodata);
 
             statusElement.innerHTML = Biodata === 0 ? "Acquiring Signal..." : "Monitoring";
             valueElement.textContent = Biodata;
+
+            statusElementecg.innerHTML = ecgdata === 0 ? "Acquiring Signal..." : "Monitoring";
+            valueElementecg.textContent = ecgdata;
 
             if (ecgdata >= 400000 && ecgdata <600000) {
                 document.querySelector("#ecgdata").textContent = "Normal";
@@ -520,16 +599,27 @@
                 document.querySelector("#gsrdata").textContent = "Worst";
 
             }
-            // Update chart data
+
             if (data.labels.length >= 200) {
                 data.labels.shift();
                 data.datasets[0].data.shift();
             }
+            // Update chart data
+            if (dataecg.labels.length >= 200) {
+                dataecg.labels.shift();
+                dataecg.datasets[0].data.shift();
+            }
+
+            
 
             data.labels.push(new Date().toLocaleTimeString());
             data.datasets[0].data.push(Biodata);
 
+            dataecg.labels.push(new Date().toLocaleTimeString());
+            dataecg.datasets[0].data.push(ecgdata);
+
             myChart.update('none'); // No animation for performance
+            myChartecg.update('none');
         });
 
         // Simulated QRS-like BioZ waveform function

@@ -3,6 +3,8 @@ const axios = require("axios");
 const http = require("http");
 const socketIo = require("socket.io");
 require("dotenv").config();
+const moment = require('moment');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -26,7 +28,6 @@ let latestDistance = 0;
 let ecgdata = 0;
 
 
-
 app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -42,16 +43,33 @@ const connection = mysql.createConnection({
 
 
 
+
+
 app.get('/', (req,res) => {
    res.render("Home.ejs");
 });
 
 
 app.get('/doctor/:id', async (req,res) => { 
-   res.render("doctorReport.ejs");
+    searid = req.params;   
+    console.log(searid.id); 
+
+   try {
+      connection.query("select * from patient where pat_doc_key = ?", [searid.id], (err1, result1) => {
+          if (err1) throw err1;
+          res.render("patientList.ejs", {data : result1});
+      });
+  } catch (err) {
+      console.log(err);
+  }
+  
+
 });
 
+app.get('/doctor/:id/:patientid', async (req,res) => { 
+  res.render("doctorpview.ejs");
 
+});
 
 app.get('/login', async (req,res) => { 
    res.render("login.ejs");
@@ -289,11 +307,42 @@ const fetchBioData = async (id) => {
    }
  };
 
+ const PredictData = async (predict) => {
+  try {
+    // Generate current date and hour dynamically
+    const currentDate = moment().format('YYYY-MM-DD');
+    const currentHour = moment().hour();
+ // Simulated BioZ value
+
+    // Sending a POST request to the Python server
+    const response = await axios.post('http://127.0.0.1:8000/predict', null, {
+      params: {
+          date: currentDate,
+          hour: currentHour,
+          av_bio_value: predict
+      }
+  });
+  
+    // res.json(response.data);
+
+    return response;
+  } catch (error) {
+    console.error('Error occurred:', error.message);
+    res.status(500).json({
+      error: 'Prediction failed',
+      details: error.message
+    });
+  }
+};
 
 app.get('/patient/:id', async (req,res) =>{
    const { id } = req.params; 
-   res.render("doctorpview.ejs",{ data1: latestDistance });
+      let predicteddata = await PredictData(latestDistance)
+     
+   console.log(predicteddata.data);
+   res.render("doctorpview.ejs",{ data1: latestDistance , result : predicteddata.data});
    setInterval(() => fetchBioData(id), 1000);
+   setInterval(async () => await PredictData(latestDistance) , 1000);
 })
 
 

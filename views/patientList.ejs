@@ -41,18 +41,32 @@
                 </tr>
             </thead>
             <tbody id="patientTableBody">
-                <!-- Table rows will be populated by JavaScript -->
+                <% for(let i = 0; i < data.length; i++) { %> 
+                    <tr>
+                        <td>
+                            <a href="/doctor/<%= data[i].pat_doc_key %>/<%= data[i].pat_key %>"><%= data[i].pat_key %></a>
+                        </td>
+                        <td><%= data[i].pat_name %></td>
+                        <td><%= data[i].pat_contact %></td>
+                        <td>Normal</td>
+                    </tr>
+                    <% } %>
+                    
             </tbody>
         </table>
     </div>
 
     <script>
         // Sample patient data
-        const patients = [
-            { id: 'AB123', name: 'prasad Patil', contact: '9297293722', condition: 'Normal' },
-            { id: 'AB123', name: 'tejas Patil', contact: '9297293722', condition: 'Normal' },
-            { id: 'AB123', name: 'Swadesh Patil', contact: '9297293722', condition: 'Need for CheckUp' }
-        ];
+//         const patients = [];
+
+// for (let i = 0; i < data.size(); i++) {
+//     let patientdata =data[i]; // Get patient data from data array (if data is an array)
+//     let { pat_id, pat_name, pat_contact, Normal } = patientdata; // Destructure patient data
+
+ 
+//     patients.push({ pat_id, pat_name, pat_contact, Normal });
+// }
 
         // Function to render patient table
         function renderPatients(patientsData) {
