@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioZ Signal Analysis Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .chart-container {
+            background: black;
+            padding: 1.25rem;
+            border-radius: 8px;
+            height: 400px;
+            margin-bottom: 1rem;
+        }
+
+        .report-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .range-indicators {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .range-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .optimal { border-left-color: #28a745; }
+        .normal { border-left-color: #17a2b8; }
+        .caution { border-left-color: #ffc107; }
+        .warning { border-left-color: #dc3545; }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        .recommendations {
+            background: #e8f4f8;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .status-stable {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-monitoring {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="forreport">
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="report-container">
+        <h1>BioZ Signal Analysis Report</h1>
+        <div class="status-indicator status-stable">Signal Status: Stable</div>
+
+        <div class="range-indicators">
+            <div class="range-card optimal">
+                <h3>Optimal Range</h3>
+                <p>499,950 - 500,050</p>
+                <small>±50 from baseline</small>
+            </div>
+            <div class="range-card normal">
+                <h3>Normal Range</h3>
+                <p>499,900 - 500,100</p>
+                <small>±100 from baseline</small>
+            </div>
+            <div class="range-card caution">
+                <h3>Caution Range</h3>
+                <p>499,850 - 500,150</p>
+                <small>±150 from baseline</small>
+            </div>
+            <div class="range-card warning">
+                <h3>Warning Range</h3>
+                <p>499,800 - 500,200</p>
+                <small>±200 from baseline</small>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Clinical Interpretation</h2>
+            <p>The BioZ signal demonstrates consistent oscillatory patterns within the predetermined normal range (499,900 - 500,100), indicating stable physiological function. Periodic variations observed are within acceptable parameters, suggesting normal homeostatic regulation.</p>
+            
+            <h3>Signal Characteristics:</h3>
+            <ul>
+                <li>Baseline Stability: Maintains central tendency around 500,000 μV</li>
+                <li>Amplitude Variation: Maximum deviation of ±150 μV from baseline</li>
+                <li>Signal Quality: High fidelity with minimal artifact interference</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Diagnostic Assessment</h2>
+            <p>The current BioZ measurements indicate:</p>
+            <ul>
+                <li>Normal impedance patterns consistent with expected physiological parameters</li>
+                <li>Adequate tissue perfusion and cellular integrity</li>
+                <li>No significant anomalies suggesting pathological conditions</li>
+                <li>Regular periodicity indicating stable autonomic function</li>
+            </ul>
+        </div>
+
+        <div class="recommendations">
+            <h2>Clinical Recommendations</h2>
+            <ol>
+                <li>Continue standard monitoring protocol at current intervals</li>
+                <li>Maintain documentation of any transient excursions beyond normal range</li>
+                <li>Implement alert system for variations exceeding ±150 μV from baseline</li>
+                <li>Schedule routine calibration check within next maintenance cycle</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>Trending Analysis</h2>
+            <p>Longitudinal analysis reveals:</p>
+            <ul>
+                <li>Consistent signal stability over the monitoring period</li>
+                <li>No significant drift in baseline measurements</li>
+                <li>Predictable periodic variations within normal physiological range</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<button id="download">Download</button>
+
+    <script>
+        const result = <%- JSON.stringify(result) %>; 
+        
+        const data = {
+            labels: result.map((item, index) => index),
+            datasets: [{
+                label: 'BioZ Signal',
+                data: result.map(item => item.av_bio_value),
+                borderColor: 'rgb(0, 255, 0)',
+                backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                tension: 0.1,
+                pointRadius: 0,
+                borderWidth: 1.5,
+            }]
+        };
+    
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 0
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white'
+                        },
+                        min: 499000,
+                        max: 500500
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'white',
+                            maxTicksLimit: 7
+                        }
+                    }
+                }
+            }
+        };
+    
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, config);
+
+  window.onload = function(){
+    document.getElementById("download").addEventListener( "click",()=>{
+   const invoice = this.document.getElementById("forreport");
+html2pdf().from(invoice).save();
+  })
+}
+    </script>
+</body>
+</html>

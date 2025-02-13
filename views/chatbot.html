@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-C-section AI Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai"></script>
+    <style>
+        /* All existing styles remain exactly the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .input-section {
+            width: 40%;
+            padding: 30px;
+            background: #f5f5f5;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .input-section.hidden {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .chat-section {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .chat-section.expanded {
+            width: 100%;
+        }
+
+        .chat-header {
+            background: #26a69a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .form-title {
+            color: #26a69a;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #26a69a;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 15px;
+            background: #e0f2f1;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            animation: blink 1s infinite;
+        }
+
+        .typing-indicator.visible {
+            display: block;
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #26a69a;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: bounce 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #26a69a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.2);
+        }
+
+        .chat-input-area button {
+            padding: 12px 20px;
+            background: #26a69a;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-area button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .chat-input-area button:hover:not(:disabled) {
+            background: #00897b;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #26a69a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.2);
+        }
+
+        .submit-profile {
+            background: #26a69a;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-profile:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .submit-profile:hover:not(:disabled) {
+            background: #00897b;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            animation: messageSlide 0.3s ease-out;
+            word-wrap: break-word;
+        }
+
+        .bot-message {
+            background: #e0f2f1;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: #26a69a;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            margin-left: auto;
+        }
+
+        .profile-status {
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .profile-status.success {
+            display: block;
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 1px solid #81c784;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .input-section, .chat-section {
+                width: 100%;
+            }
+
+            .input-section {
+                height: auto;
+                order: 2;
+            }
+
+            .input-section.hidden {
+                height: 0;
+            }
+
+            .chat-section {
+                order: 1;
+                height: 60vh;
+            }
+
+            .chat-section.expanded {
+                height: 100vh;
+            }
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section" id="inputSection">
+            <h2 class="form-title">Patient Information</h2>
+            <div class="input-group">
+                <label for="age">Age</label>
+                <input type="text" id="age" placeholder="Enter your age">
+            </div>
+            <div class="input-group">
+                <label for="healthConcern">Health Concern</label>
+                <input type="text" id="healthConcern" placeholder="Enter your health concern">
+            </div>
+            <div class="input-group">
+                <label for="foodAllergies">Food Allergies</label>
+                <input type="text" id="foodAllergies" placeholder="Any food allergies?">
+            </div>
+            <div class="input-group">
+                <label for="healissue">Healing Issues</label>
+                <input type="text" id="healissue" placeholder="Any healing issues?">
+            </div>
+            <div class="input-group">
+                <label for="bleedingLevel">Bleeding Level</label>
+                <input type="text" id="bleedingLevel" placeholder="Bleeding level (low/moderate/high)">
+            </div>
+            <button class="submit-profile" id="submitProfile">Submit Profile</button>
+            <div class="profile-status" id="profileStatus"></div>
+        </div>
+        
+        <div class="chat-section" id="chatSection">
+            <div class="chat-header">
+                <h1>Healthcare Assistant</h1>
+                <p>Your post-C-section care companion</p>
+            </div>
+            <div class="chat-messages" id="content">
+                <div class="message bot-message">
+                    Hello! I'm your post-C-section care assistant. Please fill out your profile information first. Then you can ask me any questions about your post-C-section care.
+                </div>
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userQuery" placeholder="Type your question here..." disabled>
+                <button id="sendQuery" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        
+        let maincon = document.querySelector("#content");
+        let userProfile = null;
+        let isProcessing = false;
+        
+        const apiKey = "AIzaSyB3oPFbJsBNdV3Gt0BUXk51Gb05W2TRfbM";
+        const genAI = new GoogleGenerativeAI(apiKey);
+    
+        const systemPrompt = `
+You are an AI healthcare assistant specializing in post-C-section recovery. The user has provided the following details from CareFlex:
+
+- **Age:** {age}
+- **Primary Health Concern:** {healthConcern}
+- **Food Allergies:** {foodAllergies}
+- **Healing Issues:** {healingIssues}
+- **Bleeding Level (if applicable):** {bleedingLevel}
+
+### **Your Task:**  
+Provide **concise, relevant, and medically informed responses** based **only** on the given data. **Do not assume additional details.**
+
+### Guidelines for responses:
+1. Structure your response in clear paragraphs
+2. Mark important medical advice with <important>text</important>
+3. Use emphasis for key points with <em>text</em>
+4. Separate different topics with clear breaks
+5. If urgent medical attention is needed, start with <urgent>message</urgent>
+
+### **Instructions:**  
+1. **Acknowledge** the user's input professionally.  
+2. If **healing issues** are reported, ask about:  
+   - Pain level (scale of 1-10)  
+   - Swelling, redness, or signs of infection  
+3. If **bleeding** is mentioned, inquire about:  
+   - Frequency and amount  
+   - Presence of clots  
+   - Need for frequent pad changes  
+4. If **food allergies** are reported, provide **dietary precautions**.  
+5. Keep responses **clear, structured, and medically accurate**.  
+6. If symptoms suggest **complications**, advise the user to seek **medical attention immediately**.  
+
+### **Response Format:**  
+- **Acknowledgment:** "Noted your details. Let's go over your concerns."  
+- **Follow-up Questions:** "Can you describe your pain level from 1-10?"  
+- **Guidance:** "Ensure you're following wound care best practices."  
+- **Medical Alert (if needed):** "If excessive bleeding or infection signs persist, contact a doctor."  
+
+**Only respond based on the provided data. Do not generate extra information.**  
+`;
+
+    
+        // Helper Functions
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.classList.add('visible');
+            maincon.scrollTop = maincon.scrollHeight;
+        }
+    
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.classList.remove('visible');
+        }
+    
+        async function typeText(element, text) {
+            const words = text.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                const word = words[i] + ' ';
+                element.textContent += word;
+                await new Promise(resolve => setTimeout(resolve, 30));
+            }
+        }
+    
+        // function formatResponse(text) {
+        //     return text
+        //         .replace(/<important>(.*?)<\/important>/g, '<div class="important-point">$1</div>')
+        //         .replace(/<em>(.*?)<\/em>/g, '<strong>$1</strong>')
+        //         .replace(/<urgent>(.*?)<\/urgent>/g, '<div class="important-point" style="border-color: #f44336; background: rgba(244, 67, 54, 0.1);"><strong style="color: #f44336;">URGENT: $1</strong></div>')
+        //         .split('\n\n').map(para => `<p>${para}</p>`).join('');
+        // }
+    
+
+        function formatResponse(text) {
+            return text
+                .replace(/<important>(.*?)<\/important>/g, '<div class="important-point">$1</div>')
+                .replace(/<em>(.*?)<\/em>/g, '<strong>$1</strong>')
+                .replace(/<urgent>(.*?)<\/urgent>/g, '<div class="urgent-point">URGENT: $1</div>')
+                .split(/\n\s*\n/) // Handles multiple spaces/newlines properly
+                .map(para => `<p>${para.trim()}</p>`)
+                .join('');
+        }
+
+        function formatAndDisplay() {
+            const inputText = document.getElementById("userInput").value;
+            const formattedText = formatResponse(inputText);
+            document.getElementById("formattedOutput").innerHTML = formattedText;
+        }
+        // Main chat function
+        async function run(userInput, isProfileSubmission = false) {
+            if (isProcessing) return;
+            isProcessing = true;
+    
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+            const generationConfig = {
+                temperature: 1,
+                topP: 0.95,
+                topK: 40,
+                maxOutputTokens: 8192,
+            };
+    
+            let prompt = isProfileSubmission ? 
+                systemPrompt.replace('{age}', userProfile.age)
+                    .replace('{healthConcern}', userProfile.healthConcern)
+                    .replace('{foodAllergies}', userProfile.foodAllergies)
+                    .replace('{healingIssues}', userProfile.healingIssues)
+                    .replace('{bleedingLevel}', userProfile.bleedingLevel) :
+                `Based on the user profile:\n${JSON.stringify(userProfile)}\n\nUser question: ${userInput}`;
+    
+            const chatSession = model.startChat({
+                generationConfig,
+                history: [
+                    {
+                        role: "user",
+                        parts: [{ text: prompt }],
+                    },
+                ],
+            });
+    
+            try {
+                showTypingIndicator();
+    
+                if (!isProfileSubmission) {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'message user-message';
+                    userDiv.textContent = userInput;
+                    maincon.insertBefore(userDiv, document.getElementById('typingIndicator'));
+                }
+    
+                const result = await chatSession.sendMessage(prompt);
+                const response = result.response.text();
+                
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.innerHTML = formatResponse(response);
+                maincon.insertBefore(botDiv, document.getElementById('typingIndicator'));
+                
+                maincon.scrollTop = maincon.scrollHeight;
+            } catch (error) {
+                console.error("Error:", error);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message bot-message';
+                errorDiv.textContent = "I apologize, but I encountered an error. Please try again.";
+                maincon.insertBefore(errorDiv, document.getElementById('typingIndicator'));
+            } finally {
+                hideTypingIndicator();
+                isProcessing = false;
+            }
+        }
+    
+        // Event Listeners and Initialization
+        document.addEventListener("DOMContentLoaded", () => {
+            const profileInputs = {
+                age: document.querySelector("#age"),
+                healthConcern: document.querySelector("#healthConcern"),
+                foodAllergies: document.querySelector("#foodAllergies"),
+                healissue: document.querySelector("#healissue"),
+                bleedingLevel: document.querySelector("#bleedingLevel")
+            };
+            
+            const submitProfileBtn = document.querySelector("#submitProfile");
+            const userQueryInput = document.querySelector("#userQuery");
+            const sendQueryBtn = document.querySelector("#sendQuery");
+            const profileStatus = document.querySelector("#profileStatus");
+            const inputSection = document.querySelector("#inputSection");
+            const chatSection = document.querySelector("#chatSection");
+    
+            // Profile submission handler
+            submitProfileBtn.addEventListener("click", async () => {
+                if (isProcessing) return;
+    
+                userProfile = {
+                    age: profileInputs.age.value,
+                    healthConcern: profileInputs.healthConcern.value,
+                    foodAllergies: profileInputs.foodAllergies.value,
+                    healingIssues: profileInputs.healissue.value,
+                    bleedingLevel: profileInputs.bleedingLevel.value
+                };
+    
+                // Validate all fields
+                if (Object.values(userProfile).some(value => !value.trim())) {
+                    profileStatus.textContent = "Please fill in all fields";
+                    profileStatus.className = "profile-status success";
+                    return;
+                }
+    
+                submitProfileBtn.disabled = true;
+                
+                await run('', true);
+                
+                // Update UI after profile submission
+                inputSection.classList.add('hidden');
+                chatSection.classList.add('expanded');
+                userQueryInput.disabled = false;
+                sendQueryBtn.disabled = false;
+                
+                // Show success message
+                profileStatus.textContent = "Profile submitted successfully! You can now ask questions.";
+                profileStatus.className = "profile-status success";
+                setTimeout(() => {
+                    profileStatus.style.display = 'none';
+                }, 3000);
+            });
+    
+            // Query submission handler
+            sendQueryBtn.addEventListener("click", async () => {
+                const query = userQueryInput.value.trim();
+                if (query && userProfile && !isProcessing) {
+                    sendQueryBtn.disabled = true;
+                    userQueryInput.disabled = true;
+                    
+                    await run(query);
+                    
+                    userQueryInput.value = '';
+                    userQueryInput.disabled = false;
+                    sendQueryBtn.disabled = false;
+                    userQueryInput.focus();
+                }
+            });
+    
+            // Enter key handler
+            userQueryInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQueryBtn.click();
+                }
+            });
+    
+            // Input validation
+            Object.values(profileInputs).forEach(input => {
+                input.addEventListener('input', () => {
+                    const allFilled = Object.values(profileInputs)
+                        .every(input => input.value.trim().length > 0);
+                    submitProfileBtn.disabled = !allFilled;
+                });
+            });
+    
+            // Initialize submit button state
+            submitProfileBtn.disabled = true;
+    
+            // Responsive layout handler
+            window.addEventListener('resize', () => {
+                if (userProfile) {
+                    inputSection.classList.add('hidden');
+                    chatSection.classList.add('expanded');
+                }
+            });
+    
+            // Global error handler
+            window.onerror = function(msg, url, lineNo, columnNo, error) {
+                console.error('Error: ', msg, 'URL: ', url, 'Line: ', lineNo, 'Column: ', columnNo, 'Error object: ', error);
+                return false;
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary: #2B614D;
+            --primary-dark: #234c3d;
+            --secondary: #E1F0E5;
+            --accent: #4a9577;
+            --text: #333333;
+        }
+
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            height: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.bot {
+            flex-direction: row;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.bot .message-content {
+            background: var(--secondary);
+            color: var(--text);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .quick-replies {
+            padding: 15px;
+            background: var(--secondary);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-reply-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-reply-btn {
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .input-container {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .send-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+            background: var(--secondary);
+            border-radius: 15px;
+            width: fit-content;
+            margin-bottom: 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-widget">
+        <div class="chat-header">
+            <div class="header-left">
+                <h3>Healthcare Assistant</h3>
+            </div>
+        </div>
+
+        <div class="messages-container">
+            <div class="message bot">
+                <div class="message-content">
+                    Hello! I'm your Healthcare Assistant. How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-replies">
+            <div class="quick-reply-buttons">
+                <button class="quick-reply-btn">Post-surgery pain management</button>
+                <button class="quick-reply-btn">Normal recovery symptoms</button>
+                <button class="quick-reply-btn">When to contact doctor</button>
+                <button class="quick-reply-btn">Medication schedule</button>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-wrapper">
+                <input type="text" class="chat-input" placeholder="Type your health-related question..." name="message">
+                <button class="send-button" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// Function to add a message to the chat
+// Function to add a message to the chat
+function addMessage(text, isBot) {
+    const messagesContainer = document.querySelector('.messages-container');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.textContent = text;
+    
+    messageDiv.appendChild(messageContent);
+    messagesContainer.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Function to add typing indicator
+function addTypingIndicator() {
+    const messagesContainer = document.querySelector('.messages-container');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
+    
+    for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'typing-dot';
+        typingDiv.appendChild(dot);
+    }
+    
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    return typingDiv;
+}
+
+// Function to remove typing indicator
+function removeTypingIndicator(typingIndicator) {
+    if (typingIndicator && typingIndicator.parentNode) {
+        typingIndicator.parentNode.removeChild(typingIndicator);
+    }
+}
+
+// Handle send message
+async function handleSend() {
+    const input = document.querySelector('.chat-input');
+    const sendButton = document.querySelector('.send-button');
+    const text = input.value.trim();
+    
+    if (!text) return;
+    
+    // Add user message to chat
+    addMessage(text, false);
+    input.value = '';
+    sendButton.disabled = true;
+    
+    // Show typing indicator
+    const typingIndicator = addTypingIndicator();
+    
+    try {
+        const response = await fetch('http://localhost:5500/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: text })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("Received response:", data); // Debug log
+        
+        // Remove typing indicator
+        removeTypingIndicator(typingIndicator);
+        
+        // Check the structure of your API response
+        const botResponse = data.reply || data.message || data.response || data;
+        
+        if (typeof botResponse === 'string') {
+            addMessage(botResponse, true);
+        } else if (typeof botResponse === 'object') {
+            addMessage(JSON.stringify(botResponse), true);
+        } else {
+            addMessage("Received response in unexpected format", true);
+        }
+        
+    } catch (error) {
+        console.error("Error details:", error); // Debug log
+        removeTypingIndicator(typingIndicator);
+        addMessage("I apologize, but I'm having trouble at the moment. Please try again later.", true);
+    }
+    
+    sendButton.disabled = false;
+}
+
+// Initialize the chat interface
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('.chat-input');
+    const sendButton = document.querySelector('.send-button');
+    
+    // Enable/disable send button based on input
+    input.addEventListener('input', () => {
+        sendButton.disabled = !input.value.trim();
+    });
+    
+    // Handle enter key
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !sendButton.disabled) {
+            handleSend();
+        }
+    });
+    
+    // Handle send button click
+    sendButton.addEventListener('click', handleSend);
+    
+    // Handle quick reply buttons
+    document.querySelectorAll('.quick-reply-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            input.value = button.textContent;
+            sendButton.disabled = false;
+            handleSend();
+        });
+    });
+});
+    </script>
+</body>
+</html>

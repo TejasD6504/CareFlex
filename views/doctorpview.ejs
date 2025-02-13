@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-=======
-
->>>>>>> d7955b0 (5 feb)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CareFlex - Health Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-<<<<<<< HEAD
     <style>
       :root {
     --primary-color: #2B594D;
@@ -133,142 +128,11 @@ body {
     margin-bottom: 1.5rem;
 }
 
-<<<<<<< HEAD
-        .chart-containerecg{
-=======
-
-    <style>
-        :root {
-            --primary-color: #2B594D;
-            --success-color: #22C55E;
-            --border-color: #e5e7eb;
-            --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: #ffffff;
-        }
-
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-            background: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .nav-link {
-            color: #4B5563;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-
-        .login-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        /* Tabs */
-        .tab-container {
-            padding: 0.75rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-            background: white;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 1rem;
-            min-width: max-content;
-        }
-
-        .tab {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            background: none;
-            color: #4B5563;
-            cursor: pointer;
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-
-        .tab.active {
-            background: #E8F5E9;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 2rem;
-        }
-
-
-        .chart-container {
->>>>>>> d7955b0 (5 feb)
-            width: 800px;
-            height: 400px;
-            margin: 20px auto;
-            background-color: black;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        /* Chart Card */
-        .chart-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-        }
-<<<<<<< HEAD
-=======
 .chart-title {
     font-size: 1.75rem;
     color: var(--text-dark);
     margin-bottom: 0.75rem;
 }
->>>>>>> 4a10b18701c7f66ffb991599334e46b0079099d0
 
 .chart-container {
     background: black;
@@ -411,6 +275,106 @@ body {
     background-color: #234a3f;
 }
 
+.floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .floating-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Floating Chat Window */
+        .floating-chat {
+            position: fixed;
+            bottom: 5rem;
+            right: 2rem;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .floating-chat.active {
+            display: flex;
+        }
+
+        .chat-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        #chatbot img{
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            position: fixed;
+            top: 80vh;
+            left: 90vw;
+        }
+
+        /* Animation for chat window */
+        @keyframes slideIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .floating-chat.active {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .floating-chat {
+                width: calc(100% - 2rem);
+                height: 60vh;
+                right: 1rem;
+                left: 1rem;
+                bottom: 5rem;
+            }
+
+            .floating-btn {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .dashboard-container {
@@ -477,167 +441,9 @@ body {
         text-align: center;
     }
 }
+
     </style>
 </head>
-=======
-
-        /* Stats Card */
-        .stats-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-        }
-
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-        }
-
-        .metric-label {
-            font-weight: 500;
-            color: #111827;
-        }
-
-        .metric-value {
-            color: var(--success-color);
-            font-weight: 500;
-        }
-
-        .success-message {
-            color: var(--success-color);
-            text-align: center;
-            margin-top: 1rem;
-            font-weight: 500;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Info Sections */
-        .info-section {
-            background: #f9fafb;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .info-title {
-            font-weight: 600;
-            color: #111827;
-            margin-right: 0.5rem;
-        }
-
-        /* Content Section */
-        .content {
-            color: #374151;
-            line-height: 1.6;
-            margin: 2rem 0;
-        }
-
-        .highlight {
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .factors-list {
-            margin-top: 2rem;
-        }
-
-        .factors-list h3 {
-            font-size: 1.1rem;
-            color: #111827;
-            margin-bottom: 1.5rem;
-        }
-
-        .factor {
-            margin-bottom: 1.5rem;
-        }
-
-        .factor h4 {
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.5rem;
-        }
-
-        .green-text {
-            color: var(--success-color);
-        }
-
-        .history-btn {
-            float: right;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 2rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .chart-container {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 1.5rem;
-            }
-
-            .title {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.75rem 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .tab-container {
-                padding: 0.75rem 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .chart-card,
-            .stats-card {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .title {
-                font-size: 1.75rem;
-            }
-
-            .nav-link {
-                display: none;
-            }
-
-            .login-btn {
-                margin-left: auto;
-            }
-        }
-
-        /* Chart Customization */
-        canvas {
-            width: 100% !important;
-            height: 300px !important;
-        }
-    </style>
-</head>
-
->>>>>>> d7955b0 (5 feb)
 <body>
     <nav class="navbar">
         <div class="logo">CareFlex</div>
@@ -651,7 +457,6 @@ body {
     <div class="tab-container">
         <div class="tabs">
             <button class="tab active">Recovery Rate</button>
-<<<<<<< HEAD
            
         </div>
     </div>
@@ -668,52 +473,10 @@ body {
             </div>
         </div>
 
-<<<<<<< HEAD
-        <h1>Real-Time BioZ Monitor</h1>
-        <h1 id="statusecg"></h1>
-        <p>Value: <span id="valueecg"></span></p>
-        <div class="chart-containerecg">
-            <canvas id="myChartecg"></canvas>
-=======
-            <button class="tab">Heart Rate</button>
-            <button class="tab">ECG</button>
-            <button class="tab">GSR</button>
-            <button class="tab">Bio-Impeadance</button>
-            <button class="tab">Blood Pressure</button>
-        </div>
-    </div>
-
-    <div class="container">
-        <h1 class="title">Recovery Rate</h1>
-
-        <!-- <div class="chart-container">
-             <div class="chart-card"> 
-                <canvas id="myChart"></canvas>
-            </div> -->
-
-        <h1>Real-Time BioZ Monitor</h1>
-        <h1 id="status"></h1>
-        <p>Value: <span id="value"></span></p>
-        <div class="chart-container">
-            <canvas id="myChart"></canvas>
->>>>>>> d7955b0 (5 feb)
-        </div>
-
-
-
-        <div class="stats-card">
-<<<<<<< HEAD
-=======
         <div class="live-stats">
->>>>>>> 4a10b18701c7f66ffb991599334e46b0079099d0
             <div class="metric-row">
                 <span class="metric-label">Recovery Rate</span>
-                <span class="metric-value"><%= result.status %></span>
-=======
-            <div class="metric-row">
-                <span class="metric-label">Recovery Rate</span>
-                <span class="metric-value">60%</span>
->>>>>>> d7955b0 (5 feb)
+                <span class="metric-value" id="RecoveryRate"><%= result.status %></span>
             </div>
             <div class="metric-row">
                 <span class="metric-label">Heart Rate</span>
@@ -735,24 +498,15 @@ body {
                 <span class="metric-label">Blood Pressure</span>
                 <span class="metric-value">80 mmHg</span>
             </div>
-<<<<<<< HEAD
-            <p></p>
             <p class="success-message">Everything Looks great...!! Have a Healthy Day</p>
         </div>
 
-<<<<<<< HEAD
-    <div class="info-section">
-        <span class="info-title">Conclusion :</span>
-        <span><%= result.recommendation %></span>
-    </div>
-=======
         <div class="info-section">
             <h3>Conclusion</h3>
-            <p>Your Recovery rate is normal.</p>
+            <p id="Recommand"><%= result.message %></p>
             <h3>Suggestion</h3>
             <p>Eat Healthy food like <span style="color: var(--success-color)">leafy Vegetables</span> for faster recovery</p>
         </div>
->>>>>>> 4a10b18701c7f66ffb991599334e46b0079099d0
 
         <div class="content">
             <p>The recovery rate measures how effectively the body restores itself after stress, illness, or physical exertion. It reflects factors like heart rate variability, sleep quality, and stress levels. A higher recovery rate indicates improved resilience and readiness, while a lower rate suggests the need for rest, hydration, or medical attention.</p>
@@ -767,70 +521,10 @@ body {
             </div>
         </div>
 
-        <button class="history-btn">History</button>
-=======
-            <p class="success-message">Everything Looks great...!! Have a Healthy Day</p>
-        </div>
-    </div>
+        <div id="chatbot"><a href='/patient/chatbot'><img src="/images/chatbot2.png" alt="" ></a></div>
 
-    <div class="info-section">
-        <span class="info-title">Conclusion :</span>
-        <span>Your Recovery rate is normal.</span>
-    </div>
+        <button class="history-btn" onclick="window.location.href='/patient/<%= id %>/report'">Reports</button>
 
-    <div class="info-section">
-        <span class="info-title">Suggestion:</span>
-        <span>Eat Healthy food like <span class="green-text">leafy Vegetables</span> for faster recovery</span>
-    </div>
-
-    <div class="content">
-        <p>
-            The recovery rate measures how effectively the body restores itself after stress,
-            illness, or physical exertion. It reflects factors like <span class="highlight">heart rate
-                variability</span>,
-            <span class="highlight">sleep quality</span>, and <span class="highlight">stress levels</span>.
-            A higher recovery rate indicates improved resilience and readiness,
-            while a lower rate suggests the need for rest, hydration, or medical attention.
-        </p>
-
-        <div class="factors-list">
-            <h3>After a C-section surgery, recovery can be enhanced by focusing on these factors:</h3>
-
-            <div class="factor">
-                <h4>1. Rest and Sleep</h4>
-                <p>Prioritize rest, as your body needs time to heal. Sleep when the baby sleeps to balance rest and
-                    care.</p>
-            </div>
-
-            <div class="factor">
-                <h4>1. Nutrition and Hydration</h4>
-                <p>Eat <span class="green-text">iron-rich foods</span>, <span class="green-text">lean proteins</span>,
-                    and plenty of vegetables to support healing and energy. Stay hydrated to aid recovery and milk
-                    production.</p>
-            </div>
-
-            <div class="factor">
-                <h4>1. Gentle Movement</h4>
-                <p>Begin with light walking to improve circulation and prevent blood clots, but avoid lifting heavy
-                    objects.</p>
-            </div>
-
-            <div class="factor">
-                <h4>1. Wound Care</h4>
-                <p>Keep the incision clean and dry to prevent infection. Watch for redness, swelling, or unusual
-                    discharge.</p>
-            </div>
-
-            <div class="factor">
-                <h4>1. Support and Stress Management</h4>
-                <p>Accept help from family and friends. Use relaxation techniques to manage stress and focus on
-                    emotional well-being.</p>
-            </div>
-        </div>
-    </div>
-
-    <button class="history-btn">History</button>
->>>>>>> d7955b0 (5 feb)
     </div>
 
     <script>
@@ -883,7 +577,7 @@ body {
                         },
                         ticks: {
                             color: 'white',
-                            maxTicksLimit: 10
+                            maxTicksLimit: 7
                         }
                     }
                 }
@@ -893,67 +587,6 @@ body {
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, config);
 
-<<<<<<< HEAD
-        const dataecg = {
-        labels: [],
-            datasets: [{
-                label: 'ecg Signal',
-                data: [],
-                borderColor: 'rgb(0, 255, 0)',
-                backgroundColor: 'rgba(0, 255, 0, 0.1)',
-                tension: 0.1,
-                pointRadius: 0,
-                borderWidth: 1.5,
-            }]
-        };
-
-        const configecg = {
-            type: 'line',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 0
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        labels: {
-                            color: 'white'
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        ticks: {
-                            color: 'white'
-                        },
-                        min: 499000,
-                        max: 500500
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)'
-                        },
-                        ticks: {
-                            color: 'white',
-                            maxTicksLimit: 10
-                        }
-                    }
-                }
-            }
-        };
-
-        const ctxecg = document.getElementById('myChartecg').getContext('2d');
-        const myChartecg = new Chart(ctxecg, configecg);
-
-=======
->>>>>>> d7955b0 (5 feb)
         const socket = io();
         socket.on("distanceUpdate", (maindata) => {
 
@@ -962,36 +595,19 @@ body {
             let gsrdata = maindata.gsrdata;
 
 
-<<<<<<< HEAD
-            console.log('Biodata:', Biodata);
-            console.log('ECG Data:', ecgdata);
-            // console.log('GSR Data:', gsrdata);
-=======
             // console.log('Biodata:', Biodata);
             // console.log('ECG Data:', ecgdata);
             console.log('GSR Data:', gsrdata);
->>>>>>> d7955b0 (5 feb)
 
 
             const statusElement = document.getElementById("status");
             const valueElement = document.getElementById("value");
-<<<<<<< HEAD
-            const statusElementecg = document.getElementById("statusecg");
-            const valueElementecg = document.getElementById("valueecg");
-=======
 
->>>>>>> d7955b0 (5 feb)
             // console.log("New Value = ", Biodata);
 
             statusElement.innerHTML = Biodata === 0 ? "Acquiring Signal..." : "Monitoring";
             valueElement.textContent = Biodata;
 
-<<<<<<< HEAD
-            statusElementecg.innerHTML = ecgdata === 0 ? "Acquiring Signal..." : "Monitoring";
-            valueElementecg.textContent = ecgdata;
-
-=======
->>>>>>> d7955b0 (5 feb)
             if (ecgdata >= 400000 && ecgdata <600000) {
                 document.querySelector("#ecgdata").textContent = "Normal";
             } else if (ecgdata >= 600000 && ecgdata <800000) {
@@ -1002,12 +618,15 @@ body {
 
             if (Biodata >= 499990) {
                 document.querySelector("#biodata").textContent = "Normal";
-            } else if (Biodata >= 500000) {
-                document.querySelector("#biodata").textContent = "Consult";
-            } else {
-                document.querySelector("#biodata").textContent = "Worst";
+                // document.querySelector("#RecoveryRate").textContent = 'Normal';
+                // document.querySelector("#Recommand").textContent = 'EveryThing is Good! Follow Regular routine';
 
-            }
+            } else if (Biodata >= 510000) {
+                document.querySelector("#biodata").textContent = "Consult";
+                // document.querySelector("#RecoveryRate").textContent = 'Critical';
+                // document.querySelector("#Recommand").textContent = 'Need to visit Doctor';
+
+            } 
 
             if (gsrdata >= 200 && gsrdata <500) {
                 document.querySelector("#gsrdata").textContent = "No pain";
@@ -1015,40 +634,17 @@ body {
                 document.querySelector("#gsrdata").textContent = "MIld Pain";
             } else if(gsrdata >= 700 && gsrdata <1023){
                 document.querySelector("#gsrdata").textContent = "Worst";
-
             }
-<<<<<<< HEAD
-
-=======
             // Update chart data
->>>>>>> d7955b0 (5 feb)
             if (data.labels.length >= 200) {
                 data.labels.shift();
                 data.datasets[0].data.shift();
             }
-<<<<<<< HEAD
-            // Update chart data
-            if (dataecg.labels.length >= 200) {
-                dataecg.labels.shift();
-                dataecg.datasets[0].data.shift();
-            }
-
-            
-=======
->>>>>>> d7955b0 (5 feb)
 
             data.labels.push(new Date().toLocaleTimeString());
             data.datasets[0].data.push(Biodata);
 
-<<<<<<< HEAD
-            dataecg.labels.push(new Date().toLocaleTimeString());
-            dataecg.datasets[0].data.push(ecgdata);
-
             myChart.update('none'); // No animation for performance
-            myChartecg.update('none');
-=======
-            myChart.update('none'); // No animation for performance
->>>>>>> d7955b0 (5 feb)
         });
 
         // Simulated QRS-like BioZ waveform function

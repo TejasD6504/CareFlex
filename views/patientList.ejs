@@ -3,99 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareFlex Dashboard</title>
+    <title>CareFlex Patient List</title>
     <link rel="stylesheet" href="/css/patientList.css">
-
 </head>
 <body>
-    <nav>
-        <div class="logo">CareFlex</div>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="/images/logo.png" alt="CareFlex Logo" class="nav-logo">
+            <span class="brand-name">CareFlex</span>
+        </div>
         <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Monitoring Dashboard</a>
-            <button class="login-btn">Login</button>
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Monitoring Dashboard</a>
+            <a href="#" class="nav-login">Login</a>
         </div>
     </nav>
 
     <div class="main-content">
-        <div class="doctor-profile">
-            <img src="divya.png" alt="Doctor Profile" class="doctor-image">
-            <div class="doctor-name">Dr. Sarah Mitchell</div>
+        <div class="dashboard-header">
+            <div class="doctor-profile">
+                <img src="/Images/comfort.png" alt="Doctor Profile" class="doctor-image">
+                <div class="doctor-info">
+                    <div class="doctor-name">Dr. Sarah Mitchell</div>
+                    <div class="doctor-specialty">General Physician</div>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <input type="text" placeholder="Search patient name or ID" class="search-input" id="searchInput">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
         </div>
 
-        <div class="search-container">
-            <input type="text" placeholder="Search Name" class="search-input" id="searchInput">
-            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-        </div>
+        <div class="patient-table-container">
+            <div class="table-header">
+                <div class="header-cell">Patient ID</div>
+                <div class="header-cell">Name</div>
+                <div class="header-cell">Contact Number</div>
+                <div class="header-cell">Condition</div>
+            </div>
 
-        <table class="patient-table">
-            <thead>
-                <tr>
-                    <th>Patient ID</th>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Condition</th>
-                </tr>
-            </thead>
-            <tbody id="patientTableBody">
+            <div id="list" class="table-body">
                 <% for(let i = 0; i < data.length; i++) { %> 
-                    <tr>
-                        <td>
-                            <a href="/doctor/<%= data[i].pat_doc_key %>/<%= data[i].pat_key %>"><%= data[i].pat_key %></a>
-                        </td>
-                        <td><%= data[i].pat_name %></td>
-                        <td><%= data[i].pat_contact %></td>
-                        <td>Normal</td>
-                    </tr>
-                    <% } %>
-                    
-            </tbody>
-        </table>
+                    <div id="patient<%= i+1 %>" class="table-row">
+                        <a href="/doctor/<%= data[i].pat_doc_key %>/<%= data[i].pat_key %>" class="row-link">
+                            <div class="cell patient-id"><%= data[i].pat_key %></div>
+                            <div class="cell patient-name"><%= data[i].pat_name %></div>
+                            <div class="cell patient-contact"><%= data[i].pat_contact %></div>
+                            <div class="cell">
+                                <span class="status-badge status-normal">Normal</span>
+                            </div>
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Sample patient data
-//         const patients = [];
-
-// for (let i = 0; i < data.size(); i++) {
-//     let patientdata =data[i]; // Get patient data from data array (if data is an array)
-//     let { pat_id, pat_name, pat_contact, Normal } = patientdata; // Destructure patient data
-
- 
-//     patients.push({ pat_id, pat_name, pat_contact, Normal });
-// }
-
-        // Function to render patient table
-        function renderPatients(patientsData) {
-            const tableBody = document.getElementById('patientTableBody');
-            tableBody.innerHTML = '';
-
-            patientsData.forEach(patient => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${patient.id}</td>
-                    <td>${patient.name}</td>
-                    <td>${patient.contact}</td>
-                    <td class="${patient.condition === 'Normal' ? 'condition-normal' : 'condition-checkup'}">${patient.condition}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Initialize table
-        renderPatients(patients);
-
-        // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            const filteredPatients = patients.filter(patient => 
-                patient.name.toLowerCase().includes(searchTerm) ||
-                patient.id.toLowerCase().includes(searchTerm)
-            );
-            renderPatients(filteredPatients);
+            const patientRows = document.querySelectorAll('.table-row');
+            
+            patientRows.forEach(row => {
+                const patientName = row.querySelector('.patient-name').textContent.toLowerCase();
+                const patientId = row.querySelector('.patient-id').textContent.toLowerCase();
+                
+                if (patientName.includes(searchTerm) || patientId.includes(searchTerm)) {
+                    row.style.display = 'block';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
