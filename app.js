@@ -34,7 +34,7 @@ let ecgdata = 0;
 
 const LANGFLOW_CONFIG = {
   baseURL: 'https://api.langflow.astra.datastax.com',
-  applicationToken: 'AstraCS:QiDkRHxRAZMsqZFXjkxZbciu:4c940532c4342c844dc6f0489996c29aef2290febdcffa27928eb87af02d6da3', // Replace with your actual token
+  applicationToken: 'AstraCS:yRogUWcqNKYDsjYqUpmeXpRq:c0f938e4b29858c8f1d00519cb191a1d13c09608c73986080a87855bef368366', // Replace with your actual token
   flowId: 'llm',
   langflowId: process.env.LLMAPI_KEY // Replace with your actual Langflow ID
 };
