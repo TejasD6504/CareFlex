@@ -33,7 +33,7 @@ let latestDistance = 0;
 let ecgdata = 0;
 
 const LANGFLOW_CONFIG = {
-  baseURL: 'https://api.langflow.astra.datastax.com',
+  baseURL: process.env.baseURL,
   applicationToken: process.env.LLMAKEY, // Replace with your actual token
   flowId: 'llm',
   langflowId: process.env.LLMAPI_KEY // Replace with your actual Langflow ID
