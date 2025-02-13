@@ -36,7 +36,7 @@ const LANGFLOW_CONFIG = {
   baseURL: 'https://api.langflow.astra.datastax.com',
   applicationToken: 'AstraCS:QiDkRHxRAZMsqZFXjkxZbciu:4c940532c4342c844dc6f0489996c29aef2290febdcffa27928eb87af02d6da3', // Replace with your actual token
   flowId: 'llm',
-  langflowId: '8249cca7-c7b4-4e4f-abc0-867395539a25' // Replace with your actual Langflow ID
+  langflowId: process.env.LLMAPI_KEY // Replace with your actual Langflow ID
 };
 
 
