@@ -60,10 +60,10 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const connection = mysql.createConnection({
-   host: "localhost",
-   user: "root",
-   database: "Careflex",
-   password: "root"
+   host: process.env.DB_HOSTNAME,
+   user: process.env.DB_USER,
+   database: process.env.DB_DATABASE,
+   password: process.env.DB_PASSWORD
 });
 
 
