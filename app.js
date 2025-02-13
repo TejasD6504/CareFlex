@@ -34,9 +34,9 @@ let ecgdata = 0;
 
 const LANGFLOW_CONFIG = {
   baseURL: process.env.baseURL,
-  applicationToken: process.env.LLMAKEY, // Replace with your actual token
-  flowId: 'llm',
-  langflowId: process.env.LLMAPI_KEY // Replace with your actual Langflow ID
+  applicationToken: process.env.LLMAKEY,
+  flowId: process.env.llm,
+  langflowId: process.env.LLMAPI_KEY 
 };
 
 
