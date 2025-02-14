@@ -282,6 +282,8 @@ async function handleSend() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ message: text })
+            
+            
         });
         
         if (!response.ok) {
@@ -294,6 +296,9 @@ async function handleSend() {
         // Remove typing indicator
         removeTypingIndicator(typingIndicator);
         
+
+        
+
         // Check the structure of your API response
         const botResponse = data.reply || data.message || data.response || data;
         

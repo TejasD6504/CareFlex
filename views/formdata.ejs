@@ -452,66 +452,83 @@ Provide **concise, relevant, and medically informed responses** based **only** o
         }
         // Main chat function
         async function run(userInput, isProfileSubmission = false) {
-            if (isProcessing) return;
-            isProcessing = true;
-    
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-            const generationConfig = {
-                temperature: 1,
-                topP: 0.95,
-                topK: 40,
-                maxOutputTokens: 8192,
-            };
-    
-            let prompt = isProfileSubmission ? 
-                systemPrompt.replace('{age}', userProfile.age)
-                    .replace('{healthConcern}', userProfile.healthConcern)
-                    .replace('{foodAllergies}', userProfile.foodAllergies)
-                    .replace('{healingIssues}', userProfile.healingIssues)
-                    .replace('{bleedingLevel}', userProfile.bleedingLevel) :
-                `Based on the user profile:\n${JSON.stringify(userProfile)}\n\nUser question: ${userInput}`;
-    
-            const chatSession = model.startChat({
-                generationConfig,
-                history: [
-                    {
-                        role: "user",
-                        parts: [{ text: prompt }],
-                    },
-                ],
-            });
-    
-            try {
-                showTypingIndicator();
-    
-                if (!isProfileSubmission) {
-                    const userDiv = document.createElement('div');
-                    userDiv.className = 'message user-message';
-                    userDiv.textContent = userInput;
-                    maincon.insertBefore(userDiv, document.getElementById('typingIndicator'));
-                }
-    
-                const result = await chatSession.sendMessage(prompt);
-                const response = result.response.text();
-                
-                const botDiv = document.createElement('div');
-                botDiv.className = 'message bot-message';
-                botDiv.innerHTML = formatResponse(response);
-                maincon.insertBefore(botDiv, document.getElementById('typingIndicator'));
-                
-                maincon.scrollTop = maincon.scrollHeight;
-            } catch (error) {
-                console.error("Error:", error);
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'message bot-message';
-                errorDiv.textContent = "I apologize, but I encountered an error. Please try again.";
-                maincon.insertBefore(errorDiv, document.getElementById('typingIndicator'));
-            } finally {
-                hideTypingIndicator();
-                isProcessing = false;
-            }
+    if (isProcessing) return;
+    isProcessing = true;
+
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: `You are an AI healthcare assistant specializing in post-C-section recovery. 
+        The user has provided the following details:
+
+        - **Age:** ${userProfile?.age || "Not provided"}
+        - **Primary Health Concern:** ${userProfile?.healthConcern || "Not provided"}
+        - **Food Allergies:** ${userProfile?.foodAllergies || "Not provided"}
+        - **Healing Issues:** ${userProfile?.healingIssues || "Not provided"}
+        - **Bleeding Level:** ${userProfile?.bleedingLevel || "Not provided"}
+
+        ### **Your Task:**  
+        Provide **concise, relevant, and medically informed responses** based **only** on the given data. **Do not assume additional details.**
+
+        ### **Guidelines for responses:**
+        1. Structure your response in clear paragraphs.
+        2. Mark important medical advice with <important>text</important>.
+        3. Use emphasis for key points with <em>text</em>.
+        4. Separate different topics with clear breaks.
+        5. If urgent medical attention is needed, start with <urgent>message</urgent>.
+
+        ### **Instructions:**  
+        - Acknowledge the user's input professionally.  
+        - If healing issues are reported, ask about pain levels, swelling, or infection signs.  
+        - If bleeding is mentioned, inquire about frequency, amount, and clotting.  
+        - If food allergies exist, provide dietary precautions.  
+        - Ensure responses are clear, structured, and medically accurate.  
+        - If symptoms suggest complications, advise the user to seek medical attention immediately.` 
+    });
+
+    const generationConfig = {
+        temperature: 1,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 8192,
+    };
+
+    const chatSession = model.startChat({
+        generationConfig,
+        history: [
+            {
+                role: "user",
+                parts: [{ text: userInput }],
+            },
+        ],
+    });
+
+    try {
+        showTypingIndicator();
+
+        if (!isProfileSubmission) {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.textContent = userInput;
+            maincon.insertBefore(userDiv, document.getElementById('typingIndicator'));
         }
+
+        const result = await chatSession.sendMessage(userInput);
+        hideTypingIndicator();
+
+        if (result.response) {
+            const botDiv = document.createElement('div');
+            botDiv.className = 'message bot-message';
+            botDiv.innerHTML = formatResponse(result.response.text());
+            maincon.insertBefore(botDiv, document.getElementById('typingIndicator'));
+            maincon.scrollTop = maincon.scrollHeight;
+        }
+    } catch (error) {
+        console.error("Error generating response:", error);
+    } finally {
+        isProcessing = false;
+    }
+}
+
     
         // Event Listeners and Initialization
         document.addEventListener("DOMContentLoaded", () => {

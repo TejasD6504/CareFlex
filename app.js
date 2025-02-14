@@ -258,7 +258,7 @@ app.post('/api/chat', validateChatRequest, async (req, res) => {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            input_value: message,
+            input_value: "you are Careflex a chatbot specifically created for answering the questions related to C-section delivery and if there is a question which are not related to topic just give a small message of what you are and what question should be asked to you" + message,
             input_type: 'chat',
             output_type: 'chat'
         })
@@ -287,10 +287,17 @@ app.post('/api/chat', validateChatRequest, async (req, res) => {
       }
 
       const botResponse = data.outputs[0].outputs[0].outputs.message.message.text;
-      console.log('Bot Response:', botResponse);
 
-      res.json({ response: botResponse });
-
+      function cleanText(text) {
+        return `${text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*\s+/g, '')}`; 
+    }
+    
+    const cleanedResponse = cleanText(botResponse);
+    
+    console.log('Bot Response:', cleanedResponse);
+    
+    res.json({ response: cleanedResponse });
+    
   } catch (error) {
       console.error('Error processing request:', error);
       res.status(500).json({
