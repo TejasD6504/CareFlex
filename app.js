@@ -517,8 +517,21 @@ console.log(time_stamp);
 //     });
 //   }
 // };
-app.get('/patient/chatbot', async (req, res) => {
-     res.render("formdata");
+app.get('/patient/:id/chatbot', async (req, res) => {
+ const { id } = req.params;
+
+  try{
+   
+    await connection.query("select * from patient where pat_key = ?",[id],(err,result) => {
+            if(err) throw err;
+            console.log(result[0]);
+            res.render("formdata",{datamain : result[0]});
+        })
+    } catch(err){
+        console.log(err);
+    }
+
+     
 });
 
 app.get('/patient/:id', async (req, res) => {
