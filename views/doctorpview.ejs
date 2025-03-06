@@ -466,7 +466,7 @@ body {
             <div class="chart-header">
                 <h2 class="chart-title">Recovery Rate</h2>
                 <h3 id="status"></h3>
-                <p>Value: <span id="value"></span></p>
+                <p><span id="value"></span></p>
             </div>
             <div class="chart-container">
                 <canvas id="myChart"></canvas>
@@ -521,7 +521,7 @@ body {
             </div>
         </div>
 
-        <div id="chatbot"><a href='/patient/chatbot'><img src="/images/chatbot2.png" alt="" ></a></div>
+        <div id="chatbot"><a href='/patient/<%= id %>/chatbot'><img src="/images/chatbot2.png" alt="" ></a></div>
 
         <button class="history-btn" onclick="window.location.href='/patient/<%= id %>/report'">Reports</button>
 
@@ -606,7 +606,7 @@ body {
             // console.log("New Value = ", Biodata);
 
             statusElement.innerHTML = Biodata === 0 ? "Acquiring Signal..." : "Monitoring";
-            valueElement.textContent = Biodata;
+            // valueElement.textContent = Biodata;
 
             if (ecgdata >= 400000 && ecgdata <600000) {
                 document.querySelector("#ecgdata").textContent = "Normal";

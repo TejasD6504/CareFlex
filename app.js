@@ -26,7 +26,7 @@ const THING_ID = "7f2fe9c1-708f-4402-8caa-c9e36b6af50a";
 const PROPERTY_IDBIOZ = "43c0f0b4-551d-4679-8035-2cffa9eb5344";
 const PROPERTY_IDECG = "c095a2f8-8bfa-4ce6-af02-f7b6708d002c";
 const PROPERTY_IDGSR = "8944062e-46d8-4306-94ae-3f43014910ad";
-
+const GEMINIAPIKEY = process.env.GEMINIAPIKEY;
 
 let accessToken = "";
 let latestDistance = 0; 
@@ -82,9 +82,13 @@ app.get('/doctor/:id', async (req,res) => {
    try {
       connection.query("select * from patient where pat_doc_key = ?", [searid.id], (err1, result1) => {
           if (err1) throw err1;
-          res.render("patientList.ejs", {data : result1});
+          connection.query("select * from doctors where doc_key = ?", [searid.id], (err2, result2) => {
+            if (err2) throw err2;
+          res.render("patientList.ejs", {data : result1, doc_data : result2});
       });
+    });
   } catch (err) {
+    res.render("error.ejs");
       console.log(err);
   }
   
@@ -130,6 +134,7 @@ app.post('/login', async (req,res) => {
            
           })
       } catch(err){
+        res.render("error.ejs",{err : err});
           console.log(err);
       }
 });
@@ -155,6 +160,7 @@ app.post('/login/doctordata', async(req,res)=>
               res.redirect("/login");
           })
       } catch(err){
+        res.render("error.ejs",{err : err});
           console.log(err);
       }
 })
@@ -182,6 +188,8 @@ app.post('/login/patientdata', async(req,res) =>
           })
          })
       } catch(err){
+        res.render("error.ejs",{err : err});
+
           console.log(err);
       }
 })
@@ -202,6 +210,8 @@ app.get('/patient/:id/report', (req, res) => {
       });
 
   } catch (err) {
+    res.render("error.ejs",{err : err});
+
       console.error("Server error:", err);
       res.status(500).send("Internal Server Error");
   }
@@ -229,6 +239,11 @@ function generateDoctorKey() {
     res.render("chatbot");
   });
 
+  
+ app.get('/error', (req, res) => {
+  res.render("error.ejs");
+});
+
 const validateChatRequest = (req, res, next) => {
   console.log('Request Body:', req.body); // Debugging
 
@@ -249,6 +264,8 @@ app.post('/api/chat', validateChatRequest, async (req, res) => {
 
       const requestUrl = `${LANGFLOW_CONFIG.baseURL}/lf/${LANGFLOW_CONFIG.langflowId}/api/v1/run/${LANGFLOW_CONFIG.flowId}`;
       console.log('Making request to:', requestUrl);
+
+      console.log("Using Token:", LANGFLOW_CONFIG.applicationToken);
 
       const response = await fetch(requestUrl, {
         method: 'POST',
@@ -354,6 +371,8 @@ function generateDoctorKey() {
    return doctorKey;
 }
 
+
+
 // Fetch access token from Arduino API
 const getAccessToken = async () => {
    try {
@@ -454,6 +473,8 @@ const fetchBioData = async (id) => {
      // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata ,gsrdata});
    } catch (error) {
+    res.render("error.ejs",{err : err});
+
      console.error("Error fetching ultrasonic data:", error.responseBioz?.data || error.message);
    }
  };
@@ -525,13 +546,12 @@ app.get('/patient/:id/chatbot', async (req, res) => {
     await connection.query("select * from patient where pat_key = ?",[id],(err,result) => {
             if(err) throw err;
             console.log(result[0]);
-            res.render("formdata",{datamain : result[0]});
+            res.render("formdata",{datamain : result[0],GEMINIAPIKEY});
         })
     } catch(err){
+      res.render("error.ejs",{err : err});
         console.log(err);
     }
-
-     
 });
 
 app.get('/patient/:id', async (req, res) => {
@@ -600,7 +620,7 @@ app.get('/doctor/:id/:patientid', async (req,res) => {
   let predicteddata = await PredictData(latestDistance)
  
 // console.log(predicteddata.data);
-res.render("doctorpview.ejs",{ data1: latestDistance ,result : predicteddata});
+res.render("doctorpview.ejs",{ data1: latestDistance ,result : predicteddata , id : patientid});
 setInterval(() => fetchBioData(patientid), 1000);
 setInterval(async () => await PredictData(latestDistance) , 1000);
 });

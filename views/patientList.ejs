@@ -1,84 +1,176 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareFlex Patient List</title>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>     
+    <meta charset="UTF-8">     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">     
+    <title>CareFlex Patient List</title>     
     <link rel="stylesheet" href="/css/patientList.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <img src="/images/logo.png" alt="CareFlex Logo" class="nav-logo">
-            <span class="brand-name">CareFlex</span>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="nav-link">Monitoring Dashboard</a>
-            <a href="#" class="nav-login">Login</a>
-        </div>
-    </nav>
-
-    <div class="main-content">
-        <div class="dashboard-header">
-            <div class="doctor-profile">
-                <img src="/Images/comfort.png" alt="Doctor Profile" class="doctor-image">
-                <div class="doctor-info">
-                    <div class="doctor-name">Dr. Sarah Mitchell</div>
-                    <div class="doctor-specialty">General Physician</div>
-                </div>
-            </div>
-
-            <div class="search-container">
-                <input type="text" placeholder="Search patient name or ID" class="search-input" id="searchInput">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </div>
-        </div>
-
-        <div class="patient-table-container">
-            <div class="table-header">
-                <div class="header-cell">Patient ID</div>
-                <div class="header-cell">Name</div>
-                <div class="header-cell">Contact Number</div>
-                <div class="header-cell">Condition</div>
-            </div>
-
-            <div id="list" class="table-body">
-                <% for(let i = 0; i < data.length; i++) { %> 
-                    <div id="patient<%= i+1 %>" class="table-row">
-                        <a href="/doctor/<%= data[i].pat_doc_key %>/<%= data[i].pat_key %>" class="row-link">
-                            <div class="cell patient-id"><%= data[i].pat_key %></div>
-                            <div class="cell patient-name"><%= data[i].pat_name %></div>
-                            <div class="cell patient-contact"><%= data[i].pat_contact %></div>
-                            <div class="cell">
-                                <span class="status-badge status-normal">Normal</span>
-                            </div>
-                        </a>
-                    </div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-
+    <style>
+        /* Password toggle and copy button styling */
+        .doctor-key-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .key-controls {
+            position: absolute;
+            right: -70px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .toggle-visibility, .copy-key {
+            cursor: pointer;
+            user-select: none;
+            font-size: 18px;
+        }
+        
+        /* Copy success feedback */
+        .copy-success {
+            position: absolute;
+            background: rgba(0, 128, 0, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            right: -75px;
+            top: -25px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .copy-success.show {
+            opacity: 1;
+        }
+    </style>
+</head> 
+<body>     
+    <nav class="navbar">         
+        <div class="navbar-brand">             
+            <img src="/images/logo.png" alt="CareFlex Logo" class="nav-logo">             
+            <span class="brand-name">CareFlex</span>         
+        </div>         
+        <div class="nav-links">             
+            <a href="#" class="nav-link">Home</a>             
+            <a href="#" class="nav-link">Monitoring Dashboard</a>             
+            <a href="#" class="nav-login">Login</a>         
+        </div>     
+    </nav>      
+    
+    <div class="main-content">         
+        <div class="dashboard-header">             
+            <div class="doctor-profile">                 
+                <img src="/Images/comfort.png" alt="Doctor Profile" class="doctor-image">                 
+                <div class="doctor-info">                     
+                    <div class="doctor-name">Dr. <%= doc_data[0].name %></div>                     
+                    <div class="doctor-specialty"><%= doc_data[0].qualification %></div>                     
+                    <div class="doctor-key-container">
+                        <div class="doctor-key" id="doctorKey"><span class="hidden-text"><%= doc_data[0].doc_key %></span></div>
+                        <div class="key-controls">
+                            <span class="toggle-visibility" onclick="toggleKeyVisibility()" title="Show/Hide Key">👁️</span>
+                            <span class="copy-key" onclick="copyKeyToClipboard()" title="Copy Key">📋</span>
+                        </div>
+                        <div class="copy-success">Copied!</div>
+                    </div>                 
+                </div>             
+            </div>              
+            
+            <div class="search-container">                 
+                <input type="text" placeholder="Search patient name or ID" class="search-input" id="searchInput">                 
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">                     
+                    <circle cx="11" cy="11" r="8"></circle>                     
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>                 
+                </svg>             
+            </div>         
+        </div>          
+        
+        <div class="patient-table-container">             
+            <div class="table-header">                 
+                <div class="header-cell">Patient ID</div>                 
+                <div class="header-cell">Name</div>                 
+                <div class="header-cell">Contact Number</div>                 
+                <div class="header-cell">Condition</div>             
+            </div>              
+            
+            <div id="list" class="table-body">                 
+                <% for(let i = 0; i < data.length; i++) { %>                      
+                    <div id="patient<%= i+1 %>" class="table-row">                         
+                        <a href="/doctor/<%= data[i].pat_doc_key %>/<%= data[i].pat_key %>" class="row-link">                             
+                            <div class="cell patient-id"><%= data[i].pat_key %></div>                             
+                            <div class="cell patient-name"><%= data[i].pat_name %></div>                             
+                            <div class="cell patient-contact"><%= data[i].pat_contact %></div>                             
+                            <div class="cell">                                 
+                                <span class="status-badge status-normal">Normal</span>                             
+                            </div>                         
+                        </a>                     
+                    </div>                 
+                <% } %>             
+            </div>         
+        </div>     
+    </div>      
+    
     <script>
+        // Initialize the doctor key as hidden when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const keyElement = document.querySelector('.hidden-text');
+            const originalText = keyElement.textContent;
+            keyElement.textContent = '••••••••••';
+            keyElement.dataset.originalText = originalText;
+        });
+        
+        // Toggle visibility of doctor key
+        function toggleKeyVisibility() {
+            const keyElement = document.querySelector('.hidden-text');
+            const originalText = keyElement.dataset.originalText;
+            
+            if (keyElement.textContent.includes('•')) {
+                keyElement.textContent = originalText;
+            } else {
+                keyElement.textContent = '••••••••••';
+            }
+        }
+        
+        // Copy key to clipboard
+        function copyKeyToClipboard() {
+            const keyElement = document.querySelector('.hidden-text');
+            const originalText = keyElement.dataset.originalText;
+            
+            // Create a temporary textarea element to copy from
+            const textarea = document.createElement('textarea');
+            textarea.value = originalText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            // Show success message
+            const successMessage = document.querySelector('.copy-success');
+            successMessage.classList.add('show');
+            
+            // Hide success message after 2 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 2000);
+        }
+         
+        // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const patientRows = document.querySelectorAll('.table-row');
-            
+                     
             patientRows.forEach(row => {
                 const patientName = row.querySelector('.patient-name').textContent.toLowerCase();
                 const patientId = row.querySelector('.patient-id').textContent.toLowerCase();
-                
+                             
                 if (patientName.includes(searchTerm) || patientId.includes(searchTerm)) {
                     row.style.display = 'block';
                 } else {
                     row.style.display = 'none';
                 }
             });
-        });
-    </script>
-</body>
+        });     
+    </script> 
+</body> 
 </html>

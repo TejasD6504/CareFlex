@@ -360,7 +360,8 @@
         let userProfile = null;
         let isProcessing = false;
         
-        const apiKey = "AIzaSyB3oPFbJsBNdV3Gt0BUXk51Gb05W2TRfbM";
+        console.log( "<%= GEMINIAPIKEY %>")
+        const apiKey = "<%= GEMINIAPIKEY %>"; 
         const genAI = new GoogleGenerativeAI(apiKey);
     
 //         const systemPrompt = `
