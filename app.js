@@ -473,8 +473,6 @@ const fetchBioData = async (id) => {
      // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata ,gsrdata});
    } catch (error) {
-    res.render("error.ejs",{err : err});
-
      console.error("Error fetching ultrasonic data:", error.responseBioz?.data || error.message);
    }
  };
