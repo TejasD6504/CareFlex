@@ -44,6 +44,93 @@
         .copy-success.show {
             opacity: 1;
         }
+
+        /* Recommendation button and form styling */
+        .recommendation-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .recommendation-btn:hover {
+            background-color: #45a049;
+        }
+
+        .recommendation-form-container {
+            display: none;
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .recommendation-form {
+            width: 100%;
+        }
+
+        .recommendation-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .recommendation-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .submit-btn, .cancel-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Updated table header to include recommendation column */
+        .header-cell.recommendation {
+            flex: 0 0 150px;
+        }
     </style>
 </head> 
 <body>     
@@ -91,7 +178,8 @@
                 <div class="header-cell">Patient ID</div>                 
                 <div class="header-cell">Name</div>                 
                 <div class="header-cell">Contact Number</div>                 
-                <div class="header-cell">Condition</div>             
+                <div class="header-cell">Condition</div>
+                <div class="header-cell recommendation">Recommendation</div>             
             </div>              
             
             <div id="list" class="table-body">                 
@@ -104,7 +192,33 @@
                             <div class="cell">                                 
                                 <span class="status-badge status-normal">Normal</span>                             
                             </div>                         
-                        </a>                     
+                        </a>
+                        <div class="cell">
+                            <button type="button" class="recommendation-btn" onclick="toggleRecommendation(<%= i+1 %>)">Add Recommendation</button>
+                        </div>
+                        <div id="recommendation-form-container-<%= i+1 %>" class="recommendation-form-container">
+                            <form id="recommendation-form-<%= i+1 %>" class="recommendation-form" action="/doctor/<%= doc_data[0].doc_key %>/recommendation" method="POST">
+                                <input type="hidden" name="patientId" value="<%= data[i].pat_key %>">
+                                <input type="hidden" name="doctorId" value="<%= doc_data[0].doc_key %>">
+                                <input type="hidden" name="patientName" value="<%= data[i].pat_name %>">
+                                
+                                <div class="form-group">
+                                    <label for="recommendation-<%= i+1 %>">Medical Recommendation</label>
+                                    <textarea 
+                                        id="recommendation-<%= i+1 %>" 
+                                        name="recommendation" 
+                                        class="recommendation-textarea" 
+                                        placeholder="Enter medical recommendation for <%= data[i].pat_name %>..."
+                                        required
+                                    ></textarea>
+                                </div>
+                                
+                                <div class="recommendation-actions">
+                                    <button type="submit" class="submit-btn">Submit</button>
+                                    <button type="button" class="cancel-btn" onclick="cancelRecommendation(<%= i+1 %>)">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>                 
                 <% } %>             
             </div>         
@@ -170,7 +284,31 @@
                     row.style.display = 'none';
                 }
             });
-        });     
+        });
+
+        // Toggle recommendation form
+        function toggleRecommendation(patientId) {
+            const formContainer = document.getElementById(`recommendation-form-container-${patientId}`);
+            if (formContainer.style.display === 'block') {
+                formContainer.style.display = 'none';
+            } else {
+                // Hide all open recommendation forms first
+                document.querySelectorAll('.recommendation-form-container').forEach(container => {
+                    container.style.display = 'none';
+                });
+                formContainer.style.display = 'block';
+                // Focus on the textarea
+                const textarea = formContainer.querySelector('.recommendation-textarea');
+                textarea.focus();
+            }
+        }
+
+        // Cancel recommendation
+        function cancelRecommendation(patientId) {
+            const form = document.getElementById(`recommendation-form-${patientId}`);
+            form.reset();
+            document.getElementById(`recommendation-form-container-${patientId}`).style.display = 'none';
+        }
     </script> 
 </body> 
 </html>

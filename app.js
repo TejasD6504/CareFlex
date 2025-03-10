@@ -95,6 +95,27 @@ app.get('/doctor/:id', async (req,res) => {
 
 });
 
+app.post('/doctor/:id/recommendation', async (req,res) => { 
+  searid = req.params;   
+  console.log(searid.id); 
+  let {recommendation} = req.body;
+  console.log(req.body);
+
+  
+
+ try {
+    connection.query("UPDATE patient SET pat_recommand = ? WHERE pat_key = ?", [req.body.recommendation, req.body.patientId], (err1, result1) => {
+        if (err1) throw err1;
+        res.redirect(`/doctor/${searid.id}`); 
+  });
+} catch (err) {
+  res.render("error.ejs");
+    console.log(err);
+}
+
+
+});
+
 
 
 app.get('/login', async (req,res) => { 
