@@ -16,7 +16,7 @@ class BioZ24HourMonitor:
         self.db_config = {
             'host': 'localhost',
             'user': 'root',
-            'password': 'root',
+            'password': 'Tejas@6504',
             'database': 'careflex'
         }
 

@@ -442,60 +442,6 @@ body {
     }
 }
 
-
-.dashboard-container form {
-    grid-column: 1 / -1;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* Select styles */
-.dashboard-container form select {
-    padding: 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    background-color: white;
-    color: #111827;
-    font-size: 0.95rem;
-    min-width: 180px;
-}
-
-/* Button styles */
-.dashboard-container form button {
-    background: #2B594D;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-}
-
-.dashboard-container form button:hover {
-    background-color: #234a3f;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .dashboard-container form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .dashboard-container form select,
-    .dashboard-container form button {
-        width: 100%;
-    }
-}
     </style>
 </head>
 <body>
@@ -575,17 +521,9 @@ body {
             </div>
         </div>
 
-        <form action="/doctor/<%= doc_id %>/<%= pat_id %>/update-status" method="POST">
-            <select name="status_new">
-                <option value="Normal">Normal</option>
-                <option value="Need to Visit">Need to Visit</option>
-            </select>
-            <button type="submit">Update Status</button>
-        </form>
+        <div id="chatbot"><a href='/patient/<%= id %>/chatbot'><img src="/Images/chatbot2.png" alt="" ></a></div>
 
-        <div id="chatbot"><a href='/patient/<%= pat_id %>/chatbot'><img src="/Images/chatbot2.png" alt="" ></a></div>
-
-        <button class="history-btn" onclick="window.location.href='/patient/<%= pat_id %>/report'">Reports</button>
+        <button class="history-btn" onclick="window.location.href='/patient/<%= id %>/report'">Reports</button>
 
     </div>
 
@@ -667,8 +605,7 @@ body {
 
             // console.log("New Value = ", Biodata);
 
-            statusElement.innerHTML = Biodata === 499990 ? "Belt not worn..." : "Monitoring";
-            
+            statusElement.innerHTML = Biodata === 499990 ? "Please wear the Belt..." : "Monitoring";
             // valueElement.textContent = Biodata;
 
             if (ecgdata >= 400000 && ecgdata <600000) {

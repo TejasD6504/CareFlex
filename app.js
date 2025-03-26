@@ -5,6 +5,7 @@ const socketIo = require("socket.io");
 require("dotenv").config();
 const moment = require('moment');
 const cors = require('cors');
+cron = require('node-cron');
 // const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 
@@ -26,6 +27,7 @@ const THING_ID = "7f2fe9c1-708f-4402-8caa-c9e36b6af50a";
 const PROPERTY_IDBIOZ = "43c0f0b4-551d-4679-8035-2cffa9eb5344";
 const PROPERTY_IDECG = "c095a2f8-8bfa-4ce6-af02-f7b6708d002c";
 const PROPERTY_IDGSR = "8944062e-46d8-4306-94ae-3f43014910ad";
+const PROPERTY_EMG = "c59ed174-7434-4482-9710-b198d0bd5ffa";
 const GEMINIAPIKEY = process.env.GEMINIAPIKEY;
 
 let accessToken = "";
@@ -427,7 +429,7 @@ const getAccessToken = async () => {
 // console.log(responseBioz);
 
      ecgdata = responseecg.data.last_value;
-    //  console.log(ecgdata);
+   
 
      // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
@@ -451,6 +453,9 @@ const getAccessToken = async () => {
 
      gsrdata = responsegsr.data.last_value;
 
+     console.log("GSR data = " ,gsrdata);
+     console.log("ECG data = " ,ecgdata);
+
      // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
 
@@ -458,6 +463,29 @@ const getAccessToken = async () => {
      console.error("Error fetching ultrasonic data:", error.responseecg?.data || error.message);
    }
  };
+
+ const fetchEMGData = async () => {
+  try {
+    if (!accessToken) await getAccessToken();
+
+    const responseemg = await axios.get(
+      `https://api2.arduino.cc/iot/v2/things/${THING_ID}/properties/${PROPERTY_EMG}`,
+      { headers: { Authorization: `Bearer ${accessToken}` }}
+    );
+
+// console.log(responseBioz);
+
+    emgdata = responseemg.data.last_value;
+
+    console.log("EMG data = " ,emgdata);
+
+    // Emit the updated distance to all connected clients
+    io.emit("distanceUpdate", {latestDistance, emgdata});
+
+  } catch (error) {
+    console.error("Error fetching ultrasonic data:", error.responseemg?.data || error.message);
+  }
+};
  
 
 // Routes for patient dashboard
@@ -486,6 +514,7 @@ const fetchBioData = async (id) => {
    
       await connection.query("insert into bio_temp(id,bioimpedance_value) values (?,?)",[id,latestDistance],(err,result) => {
               if(err) throw err;
+              console.log("data inserted in bio_temp value = ",latestDistance);
           })
       } catch(err){
           console.log(err);
@@ -507,7 +536,6 @@ const PredictData = async (predict) => {
    
 
 console.log(time_stamp);
-    // Sending a POST request to the Python server
     const response = await axios.post('http://127.0.0.1:8000/data/24h', null, {
       params: {
         date: currentDate,
@@ -594,8 +622,17 @@ app.get('/patient/:id', async (req, res) => {
 
                   transporter.sendMail({
                       to: patientEmail,
-                      subject: "Visit to Doctor",
-                      html: `<h1> Need To visit doctor please </h1>`
+                      subject: "Urgent: Appointment Needed for Your Health Check-up",
+                      html: `Dear ${result[0].pat_name},<br><br>
+                      I hope you are doing well. After reviewing your recent health records, I strongly recommend that you schedule an appointment for a check-up at your earliest convenience. This will allow us to assess your condition thoroughly and provide the best possible care.<br><br>
+
+                      Please let us know your availability so we can arrange a suitable time for your visit. If you have any concerns or symptoms, do not hesitate to mention them during your appointment.<br><br>
+
+                        Looking forward to seeing you soon and ensuring your well-being.
+
+                        Best regards,
+                       ${result[0].pat_doc_name}
+`
                   }, (err, info) => {
                       if (err) {
                           console.error("Email error:", err);
@@ -611,7 +648,7 @@ app.get('/patient/:id', async (req, res) => {
 
       // console.log(predicteddata.data);
 
-      res.render("doctorpview.ejs", { data1: latestDistance , result : predicteddata ,id  : id});
+      res.render("patientpview.ejs", { data1: latestDistance , result : predicteddata ,id  : id });
 
       // Using setTimeout instead of setInterval to prevent overlapping calls
      
@@ -633,22 +670,90 @@ app.get('/patient/:id', async (req, res) => {
   }
 });
 
+// cron.schedule("*/1 * * * *", () => {
+//   const sql = "UPDATE patient SET status = 'Doctor has not viewed your reports yet'";
+  
+//   connection.query(sql, (err, result) => {
+//       if (err) {
+//           console.error("Error updating patient status:", err);
+//       } else {
+//           console.log("Patient status reset for all records.");
+//       }
+//   });
+// });
 
 app.get('/doctor/:id/:patientid', async (req,res) => { 
   const { id,patientid } = req.params; 
   let predicteddata = await PredictData(latestDistance)
- 
-// console.log(predicteddata.data);
-res.render("doctorpview.ejs",{ data1: latestDistance ,result : predicteddata , id : patientid});
+
+
+res.render("doctorpview.ejs",{ data1: latestDistance ,result : predicteddata ,  pat_id : patientid , doc_id : id });
 setInterval(() => fetchBioData(patientid), 1000);
 setInterval(async () => await PredictData(latestDistance) , 1000);
 });
 
+app.post('/doctor/:id/:patientid/update-status', async (req,res) => { 
+  const { id,patientid } = req.params;  
+  let {status_new} = req.body;
+    console.log(id);
+    console.log(patientid);
+    console.log(status_new);
 
-// Fetch ultrasonic data and update every 5 seconds
+    if(status_new == 'Need to Visit')
+    {
+      connection.query("SELECT * FROM patient WHERE pat_key = ?", [patientid], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        if (result.length > 0) {
+            const patientEmail = result[0].pat_email;
+            console.log(patientEmail);
+
+            transporter.sendMail({
+                to: patientEmail,
+                      subject: "Urgent: Appointment Needed for Your Health Check-up",
+                      html: `  <p>Dear <strong>${result[0].pat_name}</strong>,</p><br>
+                      I hope you are doing well. After reviewing your recent health records, I strongly recommend that you schedule an appointment for a check-up at your earliest convenience. This will allow us to assess your condition thoroughly and provide the best possible care.<br><br>
+
+                      Please let us know your availability so we can arrange a suitable time for your visit. If you have any concerns or symptoms, do not hesitate to mention them during your appointment.<br><br>
+
+                        Looking forward to seeing you soon and ensuring your well-being.<br><br>
+
+                        <strong>Best regards,</strong><br>
+                       <strong>${result[0].pat_doc_name}</strong> 
+`
+            }, (err, info) => {
+                if (err) {
+                    console.error("Email error:", err);
+                } else {
+                    console.log("Email sent:", info.response);
+                }
+            });
+            console.log("Email sent to patient");
+        } else {
+            console.log("No patient found with this ID.");
+        }
+    });
+    }
+
+    try{
+   
+      await connection.query("UPDATE patient SET status = ? WHERE pat_key = ?" ,[status_new, patientid],(err,result) => {
+              if(err) throw err;
+          })
+      } catch(err){
+        res.render("error.ejs",{err : err});
+          console.log(err);
+      }
+
+      res.redirect(`/doctor/${id}/${patientid}`);
+});
 
 setInterval(fetchGSRData, 1000);
 setInterval(fetchECGData, 1000);
+setInterval(fetchEMGData, 1000);
 
 getAccessToken();
 setInterval(getAccessToken, 3500 * 1000);
