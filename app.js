@@ -12,7 +12,13 @@ cron = require('node-cron');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",  // Allow all origins (or specify your frontend domain)
+    methods: ["GET", "POST"]
+  }
+});
+
 
 let path = require('path');
 const mysql = require("mysql");
