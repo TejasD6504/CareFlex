@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareFlex Threshold Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #88d6d0;
+            --primary-dark: #26a69a;
+            --text-dark: #2d3748;
+            --text-light: #f8fafc;
+            --bg-gradient: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .cyber-wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%2326a69a" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%2326a69a" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%2326a69a"/></svg>');
+            background-size: cover;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .dashboard {
+            width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            margin: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+        }
+
+        .header {
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(136, 214, 208, 0.1) 0%, rgba(38, 166, 154, 0.1) 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 12px;
+            box-shadow: 0 5px 15px rgba(38, 166, 154, 0.3);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .monitoring-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .monitoring-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 20px 0;
+            text-shadow: 0 5px 15px rgba(38, 166, 154, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(38, 166, 154, 0.4);
+        }
+
+        .btn-stop {
+            background: white;
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-dark);
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(38, 166, 154, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover::before {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .loading-container {
+            width: 100%;
+            height: 120px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(136, 214, 208, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                            rgba(255,255,255,0.8) 0%,
+                            rgba(255,255,255,0) 50%,
+                            rgba(255,255,255,0.8) 100%);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(136, 214, 208, 0.1);
+            color: var(--text-dark);
+            font-size: 16px;
+            display: none;
+        }
+
+        .threshold-results {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(136, 214, 208, 0.1);
+            display: none;
+            text-align: left;
+        }
+
+        .threshold-results h3 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .threshold-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 10px 0;
+        }
+
+        .floating-dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .dot {
+            position: absolute;
+            background: rgba(38, 166, 154, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.3; }
+            100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-wave"></div>
+   
+    <div class="dashboard">
+        <div class="floating-dots" id="floatingDots"></div>
+       
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="logo-text">Care<span>Flex</span></div>
+            </div>
+        </div>
+       
+        <div class="main-content">
+            <h2 class="monitoring-title">Patient Monitoring</h2>
+           
+            <div class="timer-display" id="timerDisplay">01:00</div>
+           
+            <div class="controls">
+                <button id="startBtn" class="btn btn-start">
+                    <i class="fas fa-play"></i> Start Monitoring
+                </button>
+                <button id="stopBtn" class="btn btn-stop" disabled>
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+            </div>
+           
+            <div class="loading-container" id="loadingContainer">
+                <div class="loading-text">Calculating threshold values...</div>
+                <div class="loading-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+           
+            <div class="status-message" id="statusMessage"></div>
+           
+            <div class="threshold-results" id="thresholdResults">
+                <h3>Threshold Analyzing ....</h3>
+                <div class="threshold-value" id="thresholdValue">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating dots
+        const floatingDots = document.getElementById('floatingDots');
+        for (let i = 0; i < 15; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.style.width = `${Math.random() * 10 + 5}px`;
+            dot.style.height = dot.style.width;
+            dot.style.left = `${Math.random() * 100}%`;
+            dot.style.bottom = `-${Math.random() * 100 + 50}px`;
+            dot.style.animationDelay = `${Math.random() * 15}s`;
+            dot.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            floatingDots.appendChild(dot);
+        }
+
+        // DOM elements
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const progressFill = document.getElementById('progressFill');
+        const statusMessage = document.getElementById('statusMessage');
+        const thresholdResults = document.getElementById('thresholdResults');
+        const thresholdValue = document.getElementById('thresholdValue');
+
+        let timeLeft = 60; 
+        let timerInterval;
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+           
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                startMonitoringProcess();
+            }
+            timeLeft--;
+        }
+
+        function startMonitoringProcess() {
+            loadingContainer.style.display = 'flex';
+            statusMessage.style.display = 'none';
+            thresholdResults.style.display = 'none';
+           
+            let width = 0;
+            const loadingInterval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(loadingInterval);
+                    fetchThresholdResults();
+                } else {
+                    width += 2; // Faster animation since backend is already processing
+                    progressFill.style.width = `${width}%`;
+                }
+            }, 30);
+        }
+
+        // Fetch threshold results from backend
+        function fetchThresholdResults() {
+            const patientId = "<%= id %>"; // Get patient ID from server
+           
+            statusMessage.style.display = "block";
+            statusMessage.textContent = "Retrieving threshold values...";
+            statusMessage.style.background = "rgba(136, 214, 208, 0.2)";
+            statusMessage.style.color = "var(--text-dark)";
+
+            fetch("/start-monitoring", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: patientId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingContainer.style.display = 'none';
+                statusMessage.style.display = 'none';
+                
+                thresholdValue.textContent = data.thresholdValue ;
+                thresholdResults.style.display = 'block';
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                loadingContainer.style.display = 'none';
+                statusMessage.textContent = "Error calculating threshold";
+                statusMessage.style.background = "rgba(231, 76, 60, 0.2)";
+                statusMessage.style.color = "#e74c3c";
+            });
+        }
+
+        // Start button click handler
+        startBtn.addEventListener('click', () => {
+
+         
+            timeLeft = 60;
+            timerDisplay.textContent = '01:00';
+           
+            // Start timer
+            fetchThresholdResults();
+
+            timerInterval = setInterval(updateTimer, 1000);
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+           
+            // Reset UI
+            progressFill.style.width = '0%';
+            loadingContainer.style.display = 'none';
+            statusMessage.style.display = 'none';
+            thresholdResults.style.display = 'none';
+        });
+
+        // Stop button click handler
+        stopBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+           
+            // Reset UI
+            loadingContainer.style.display = 'none';
+            statusMessage.style.display = 'none';
+            thresholdResults.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

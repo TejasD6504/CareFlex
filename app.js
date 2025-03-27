@@ -246,6 +246,101 @@ app.get('/patient/:id/report', (req, res) => {
   }
 });
 
+
+const activeIntervals = new Map();
+
+app.get('/patient/:id/threshold', (req, res) => {
+    const { id } = req.params;
+    res.render("threshold.ejs", { id });
+});
+
+
+app.post('/start-monitoring', (req, res) => {
+    const { id } = req.body;
+
+    if (activeIntervals.has(id)) {
+        return res.json({ message: `Monitoring already started for patient ${id}` });
+    }
+
+    let bioValues = [];
+    let EMGValues = [];
+    let GSRValues = [];
+
+    const interval = setInterval(async () => {
+        try {
+            const biodata = parseFloat(await fetchBioData(id));
+            const emgdata = await fetchEMGData();
+            const gsrdata = await fetchGSRData();
+
+            if (!isNaN(biodata)) {
+                bioValues.push(biodata);
+            }
+            if (!isNaN(emgdata)) {
+              EMGValues.push(emgdata);
+          }
+          if (!isNaN(gsrdata)) {
+            GSRValues.push(gsrdata);
+        }
+
+
+            console.log("Threshold page data Bio received:", biodata);
+            console.log("Threshold page data EMG received:", emgdata);
+            console.log("Threshold page data GSR received:", gsrdata);
+
+            if (bioValues.length >= 60 && EMGValues.length >= 60 && GSRValues.length >= 60) {
+               const gsrAvg = GSRValues.reduce((sum, val) => sum + val, 0) / GSRValues.length;
+                const emgAvg = EMGValues.reduce((sum, val) => sum + val, 0) / EMGValues.length;
+                const bioAvg = bioValues.reduce((sum, val) => sum + val, 0) / bioValues.length;
+
+                connection.query(
+                    "INSERT INTO pat_threshold (pat_id, bio_thres, EMG_thres, GSR_thres) VALUES (?, ?, ?, ?)",
+                    [id, bioAvg, emgAvg, bioAvg],
+                    (err, result) => {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+                        console.log("Inserted average bio data:", bioAvg);
+                    }
+                );
+
+                bioValues = [];
+                EMGValues = [];
+                GSRValues = [];
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, 1000);
+
+    activeIntervals.set(id, interval);
+    res.json({ message: `Monitoring started for patient ${id}` });
+});
+
+
+
+  
+
+  // try{
+  //   connection.query("select * from doctors where doc_key = ?",d_cpass,(err1,result1) => {
+  //      if(err1) throw err1;
+  //           console.log(result1[0].name);
+  //    connection.query("insert into patient(pat_name,pat_contact,pat_email,pat_password,pat_doc_key,pat_doc_name,pat_key) values (?,?,?,?,?,?,?)",[req.body.pat_name,req.body.pat_phone,req.body.pat_email,req.body.pat_pass,req.body.d_cpass,result1[0].name,pat_key],(err2,result2) => {
+  //           if(err2) throw err2;
+  //           // console.log(result);
+  //           res.redirect("/login");
+  //       })
+  //      })
+  //   } catch(err){
+  //     res.render("error.ejs",{err : err});
+
+  //       console.log(err);
+  //   }
+
+
+
+
+
  
  // Handle WebSocket connections
 function generateDoctorKey() {
@@ -464,7 +559,7 @@ const getAccessToken = async () => {
 
      // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
-
+    return gsrdata;
    } catch (error) {
      console.error("Error fetching ultrasonic data:", error.responseecg?.data || error.message);
    }
@@ -487,7 +582,7 @@ const getAccessToken = async () => {
 
     // Emit the updated distance to all connected clients
     io.emit("distanceUpdate", {latestDistance, emgdata});
-
+    return emgdata;
   } catch (error) {
     console.error("Error fetching ultrasonic data:", error.responseemg?.data || error.message);
   }
@@ -522,6 +617,7 @@ const fetchBioData = async (id) => {
               if(err) throw err;
               console.log("data inserted in bio_temp value = ",latestDistance);
           })
+        return latestDistance;
       } catch(err){
           console.log(err);
       }
@@ -538,7 +634,7 @@ const PredictData = async (predict) => {
     // Generate current date and hour dynamically
     const currentDate = moment().format('YYYY-MM-DD');
     const currentHour = moment().hour();
-    const time_stamp = moment().toISOString().slice(0, 19).replace("T", " ") // Combine date and time
+    const time_stamp = moment().toISOString().slice(0, 19).replace("T", " ")
    
 
 console.log(time_stamp);

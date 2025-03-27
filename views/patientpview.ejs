@@ -75,6 +75,8 @@ body {
     padding: 1rem 2rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--card-shadow);
+    display: flex;
+    gap: 15px;
 }
 
 .tabs {
@@ -457,9 +459,16 @@ body {
     <div class="tab-container">
         <div class="tabs">
             <button class="tab active">Recovery Rate</button>
-           
         </div>
+        <form action="/patient/<%=id%>/threshold" method="get">
+                <div class="tabs">
+                    <button class="tab active">Analyze Threshold</button> 
+                </div>
+        </form>
     </div>
+
+
+    
 
     <div class="dashboard-container">
         <div class="main-chart">
