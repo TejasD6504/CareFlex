@@ -81,6 +81,39 @@
             background: #fff3cd;
             color: #856404;
         }
+
+        /* Download Button Styling */
+        #download {
+            display: block;
+            margin: 20px auto;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #2c3e50, #1a2533);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        #download:hover {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #download:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #download::before {
+            content: "📥";
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -162,7 +195,7 @@
     </div>
 </div>
 
-<button id="download">Download</button>
+<button id="download">Download PDF Report</button>
 
     <script>
         const result = <%- JSON.stringify(result) %>; 
@@ -225,12 +258,12 @@
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, config);
 
-  window.onload = function(){
-    document.getElementById("download").addEventListener( "click",()=>{
-   const invoice = this.document.getElementById("forreport");
-html2pdf().from(invoice).save();
-  })
-}
+        window.onload = function(){
+            document.getElementById("download").addEventListener("click", () => {
+                const invoice = this.document.getElementById("forreport");
+                html2pdf().from(invoice).save();
+            })
+        }
     </script>
 </body>
 </html>

@@ -500,7 +500,7 @@ body {
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">CareFlex</div>
+        <div class="logo">MatruDaya</div>
         <div class="nav-links">
             <a href="#" class="nav-link">Home</a>
             <a href="#" class="nav-link">Monitoring Dashboard</a>
@@ -534,7 +534,7 @@ body {
             </div>
             <div class="metric-row">
                 <span class="metric-label">Heart Rate</span>
-                <span class="metric-value">70 BPM</span>
+                <span class="metric-value">Normal</span>
             </div>
             <div class="metric-row">
                 <span class="metric-label">ECG</span>
@@ -549,8 +549,8 @@ body {
                 <span class="metric-value" id="biodata"></span>
             </div>
             <div class="metric-row">
-                <span class="metric-label">Blood Pressure</span>
-                <span class="metric-value">80 mmHg</span>
+                <span class="metric-label">Temperature</span>
+                <span class="metric-value">Normal</span>
             </div>
             <p class="success-message">Everything Looks great...!! Have a Healthy Day</p>
         </div>
@@ -667,25 +667,34 @@ body {
 
             // console.log("New Value = ", Biodata);
 
-            statusElement.innerHTML = Biodata === 499990 ? "Belt not worn..." : "Monitoring";
+            statusElement.innerHTML = Biodata <= 499990 ? "Belt not worn..." : "Monitoring";
             
             // valueElement.textContent = Biodata;
 
             if (ecgdata >= 400000 && ecgdata <600000) {
                 document.querySelector("#ecgdata").textContent = "Normal";
+document.querySelector("#ecgdata").style.color = "#22C55E"
+
             } else if (ecgdata >= 600000 && ecgdata <800000) {
                 document.querySelector("#ecgdata").textContent = "Consult";
+document.querySelector("#ecgdata").style.color = "#orange"
+
             } else if(ecgdata < 800000){
                 document.querySelector("#ecgdata").textContent = "Worst";
+document.querySelector("#ecgdata").style.color = "red"
+
             }
 
-            if (Biodata >= 499990) {
+            if (Biodata <= 499990) {
                 document.querySelector("#biodata").textContent = "Normal";
+document.querySelector("#biodata").style.color = "#22C55E"
                 // document.querySelector("#RecoveryRate").textContent = 'Normal';
                 // document.querySelector("#Recommand").textContent = 'EveryThing is Good! Follow Regular routine';
 
             } else if (Biodata >= 510000) {
                 document.querySelector("#biodata").textContent = "Consult";
+                document.querySelector("#biodata").style.color = "red"
+
                 // document.querySelector("#RecoveryRate").textContent = 'Critical';
                 // document.querySelector("#Recommand").textContent = 'Need to visit Doctor';
 
@@ -693,10 +702,16 @@ body {
 
             if (gsrdata >= 200 && gsrdata <500) {
                 document.querySelector("#gsrdata").textContent = "No pain";
+                document.querySelector("#gsrdata").style.color = "#22C55E"
+
             } else if (gsrdata >= 500 && gsrdata <700) {
                 document.querySelector("#gsrdata").textContent = "MIld Pain";
-            } else if(gsrdata >= 700 && gsrdata <1023){
+                document.querySelector("#gsrdata").style.color = "orange"
+
+            } else if(gsrdata >= 700 && gsrdata <= 1023){
                 document.querySelector("#gsrdata").textContent = "Worst";
+                document.querySelector("#gsrdata").style.color = "red"
+
             }
             // Update chart data
             if (data.labels.length >= 200) {

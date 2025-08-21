@@ -399,7 +399,7 @@ app.post('/api/chat', validateChatRequest, async (req, res) => {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            input_value: "you are Careflex a chatbot specifically created for answering the questions related to C-section delivery and if there is a question which are not related to topic just give a small message of what you are and what question should be asked to you" + message,
+            input_value: "you are MatruDaya a chatbot specifically created for answering the questions related to C-section delivery and if there is a question which are not related to topic just give a small message of what you are and what question should be asked to you" + message,
             input_type: 'chat',
             output_type: 'chat'
         })
@@ -536,6 +536,7 @@ const getAccessToken = async () => {
      io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
 
    } catch (error) {
+    getAccessToken();
      console.error("Error fetching ultrasonic data:", error.responseecg?.data || error.message);
    }
  };
