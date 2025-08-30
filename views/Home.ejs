@@ -12,221 +12,245 @@
 </head>
 
 <body>
-    <div class="main">
+ <header>
         <nav>
-            <div class="logo">
-                <img src="/Images/matrudayalogonew.png" class="logoImg">
-                <h1>MatruDaya</h1>
-            </div>
-            <div class="navElements">
-                <a>Home</a>
-                <a>Dashboard</a>
-                <a href="/login">Login</a>
-            </div>
+            <div class="logo">CareFlex</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#monitoring">Monitoring Dashboard</a></li>
+            </ul>
+            <button class="mobile-menu-toggle">☰</button>
+            <a href="#login" class="login-btn">Login</a>
         </nav>
+    </header>
 
-        <div class="chat-widget">
-            <div class="chat-header">
-                <div class="header-left">
-                    <h3>Healthcare Assistant</h3>
-                </div>
-                <img src="/Images/cross_logo.png" alt="" id="cross">
-            </div>
-    
-            <div class="messages-container">
-                <div class="message bot">
-                    <div class="message-content">
-                        Hello! I'm your Healthcare Assistant. How can I help you today?
-                    </div>
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">Because Every Mother Deserves Safe Care</h1>
+                    <p class="hero-subtitle">Supporting safe motherhood through trust and technology.</p>
+                    <a href="#login" class="cta-button">Login</a>
                 </div>
             </div>
-    
-            <div class="quick-replies">
-                <div class="quick-reply-buttons">
-                    <button class="quick-reply-btn">Post-surgery pain management</button>
-                    <button class="quick-reply-btn">Normal recovery symptoms</button>
-                    <button class="quick-reply-btn">When to contact doctor</button>
-                    <button class="quick-reply-btn">Medication schedule</button>
-                </div>
-            </div>
-    
-            <div class="input-container">
-                <div class="input-wrapper">
-                    <input type="text" class="chat-input" placeholder="Type your health-related question..." name="message">
-                    <button class="send-button" disabled>Send</button>
-                </div>
-            </div>
-        </div>
+        </section>
+    </main>
 
-        <img src="/Images/chatbot2.png" alt="" id="forchatbot">
-
-        <div class="display">
-            <img src="/Images/dashboardImg_1.png" alt="">
-            <div class="displayBtn">
-                <button>Get Started</button>
-                <button>Learn More</button>
-            </div>
-        </div>
-
-        <div class="choose">
-            <h1>Why Choose MatruDaya
-
-</h1>
-            <p>Choose MatruDaya
-
- for smart recovery monitoring, early detection, and ultimate comfort—designed to support
-                seamless post-C-section healing.</p>
-        </div>
-        <div class="beltSection">
-            <svg class="belt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 92" fill="none">
-                <path
-                    d="M0 18L260 0L513.5 18H655.5L915.5 35L1134 18L1261.5 35H1326.5V82.5H1261.5L1134 72L915.5 92L655.5 72H513.5L260 57L0 72V18Z"
-                    fill="#D9D9D9" />
-            </svg>
-
-            <svg class="handle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 179" fill="none">
-                <rect width="125" height="179" rx="30" fill="#888888" />
-                <rect x="13" y="13" width="100" height="153" rx="30" fill="#D9D9D9" />
-            </svg>
-
-            <div class="elements">
-                <div class="realTime">
-                    <img src="/Images/heart.png">
-                    <p>Real-Time Monitoring</p>
-                </div>
-
-                <div class="alert">
-                    <img src="/Images/alert.png">
-                    <p>Smart Alerts</p>
-                </div>
-
-                <div class="comfort">
-                    <img src="/Images/comfort.png">
-                    <p>Comfortable to wear</p>
-                </div>
-            </div>
-        </div>
-        <div class="choose-Info">
-            <h1>1. Real-Time Monitoring</h1>
-            <p> MatruDaya
-
- provides continuous, real-time tracking of vital metrics like heart rate, blood pressure, and
-                stress
-                levels, ensuring instant updates to help users make informed health decisions anytime.</p>
-            <h1>2. Smart Alerts</h1>
-            <p>With intelligent notifications for abnormal readings, 
-MatruDaya
-
- proactively warns users of potential
-                health
-                risks, empowering them to take timely action and avoid complications before they escalate.</p>
-            <h1>3. Comfortable to Wear</h1>
-            <p>Designed with lightweight materials and ergonomic features, 
-MatruDaya
-
- ensures long-term wearability
-                without
-                discomfort, seamlessly blending into daily routines for effortless health tracking and convenience.</p>
-            <h1>4. Comprehensive Insights</h1>
-            <p>
-MatruDaya
-
- combines data from multiple metrics to offer personalized insights into recovery, stress, and
-                overall wellness, providing a holistic view of health for effective management.</p>
-        </div>
-        <div class="Instruction-Container">
-            <h1 class="how-to-use">How to use?</h1>
-            <div class="title-img">
-                <div class="steps">
-                    <div class="step1">
-                        <p class="step-number">1</p>
-                        <div class="step-card">
-                            <h1 class="card-title">Wear belt Before Surgery</h1>
-                            <p>Records the impedance and conductance Value</p>
-                        </div>
-                    </div>
-
-                    <div class="step1">
-                        <p class="step-number">2</p>
-                        <div class="step-card">
-                            <h1 class="card-title">Attach Sensor near wound area</h1>
-                            <p>Keep the electrode for real-time Monitoring</p>
-                        </div>
-                    </div>
-
-                    <div class="step1">
-                        <p class="step-number">3</p>
-                        <div class="step-card">
-                            <h1 class="card-title">personalised Threshold</h1>
-                            <p>Check the Threshold for Post-Surgery on Website</p>
-                        </div>
-                    </div>
-
-                    <div class="step1">
-                        <p class="step-number">4</p>
-                        <div class="step-card">
-                            <h1 class="card-title">Post- Surgery</h1>
-                            <p>Remove belt and wear it after Surgery</p>
-                        </div>
-                    </div>
-
-                    <div class="step1">
-                        <p class="step-number">5</p>
-                        <div class="step-card">
-                            <h1 class="card-title">Continuous Monitoring</h1>
-                            <p>Receive updates and alerts on wound healing.</p>
-                        </div>
-                    </div>
-                </div>
-                <img class="dashboard_2" src="/Images/dashboard_2.png" alt="">
-            </div>
-        </div>
-        <div class="card-section">
-            <img src="/Images/dashboard_3.jpeg" class="dashboard_3">
-            <div class="card">
-                <h1>Moms love 
-MatruDaya
-
-!</h1>
-                <p>“Start Your Journey to a Faster Recovery Today!"</p>
-            </div>
-        </div>
-
-        <div class="Explore">
-            <h1>Explore Recovery Tips & Insights</h1>
-            <div class="Explore-list">
-                <ul>
-                    <li>"Top Foods for Faster Postpartum Healing"</li>
-                    <li>"When to Seek Help: Spotting Signs of Infection After C-Section"</li>
-                    <li>"The Role of Rest in Recovery: Finding Balance as a New Mom"</li>
-                    <li>"How 
-MatruDaya
-
- Monitors Your Recovery in Real-Time"</li>
-                    <li>"Exercises to Regain Core Strength Safely Post-C-Section"</li>
-                    <li>"Managing Emotional Wellbeing During Postpartum Recovery"</li>
-                    <li>"What to Pack for a Comfortable C-Section Recovery"</li>
-                    <li>"Understanding Scar Care: Tips for Minimizing Scarring"</li>
-                </ul>
-                <img src="/Images/dashboard_4.jpeg" alt="">
-            </div>
-        </div>
-
+  <div class="why-careflex" id="features">
+     <div class="header-why-careflex">
+        <h1>Why CareFlex ??</h1>
     </div>
-<footer>
-    <p>About</p>
-    <p>|</p>
-    <p>About</p>
-    <p>|</p>
-    <p>Privacy Policy</p>
-    <p>|</p>
-    <p>Terms and Services</p>
-    <p>|</p>
-    <p>Contact Us</p>
-   
-</footer>
+    
+    <div class="cards-container">
+        <div class="card monitoring">
+            <div class="icon-container">
+                <div class="icon">💻</div>
+            </div>
+            <h3>Smart<br>Monitoring</h3>
+            <p>Track vital maternal health in real time for proactive and safer care.</p>
+        </div>
+        
+        <div class="card recovery">
+            <div class="icon-container">
+                <div class="icon">🤖</div>
+            </div>
+            <h3>Recovery<br>Assistance</h3>
+            <p>AI chatbot support with tips, reminders, and recovery guidance.</p>
+        </div>
+        
+        <div class="card alerts">
+            <div class="icon-container">
+                <div class="icon">🚨</div>
+            </div>
+            <h3>Instant<br>Alerts</h3>
+            <p>Immediate doctor notifications for critical health conditions.</p>
+        </div>
+        
+        <div class="card reports">
+            <div class="icon-container">
+                <div class="icon">📊</div>
+            </div>
+            <h3>Reports</h3>
+            <p>Clear health reports to aid better medical decisions.</p>
+        </div>
+    </div>
+  </div>
 
+  <div class="steps-careflex">
+ <div class="steps">
+        <h1 class="section-title">How It Works</h1>
+        
+        <div class="process-flow">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Doctor Registers</h3>
+                <p class="step-description">Creates an account and gets a unique key.</p>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Patient Joins</h3>
+                <p class="step-description">Uses doctor's key to sign up securely.</p>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Smart Monitoring & Chatbots</h3>
+                <p class="step-description">Continuous health tracking with AI recovery guidance.</p>
+            </div>
+            
+            <div class="arrow">→</div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Alerts & Reports</h3>
+                <p class="step-description">Doctors receive instant alerts + detailed health reports.</p>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="what-careflex" id="about">
+    <div class="container-what-careflex">
+    <!-- Circle with Belt Image -->
+    <div class="image-circle">
+      <img src="../Images/belt.png" alt="CareFlex Belt">
+    </div>
+
+    <!-- Text Content -->
+    <div class="content">
+      <h2>What is CareFlex??</h2>
+      <p>
+        CareFlex is an AI-powered maternal care platform that connects doctors and mothers through real-time monitoring, smart recovery assistance, and instant alerts. Designed with compassion and technology, it ensures safer motherhood and better medical decisions.
+      </p>
+    </div>
+  </div>
+  </div>
+
+<div class="help">
+  <!-- For Doctors -->
+  <div class="section">
+    <img src="../Images/doctor.png" alt="Doctor">
+    <div class="text">
+      <h2>For Doctors</h2>
+      <p>
+        Access real-time maternal health data, receive instant alerts, and generate detailed reports for smarter care.
+      </p>
+    </div>
+  </div>
+
+  <!-- For Mothers -->
+  <div class="section">
+    <div class="text">
+      <h2>For Mothers</h2>
+      <p>
+        Get personalized recovery guidance, reminders, and health tracking support at every stage of motherhood.
+      </p>
+    </div>
+    <img src="../Images/mother.png"" alt="Mother with Baby">
+  </div>
+
+  <!-- For Families -->
+  <div class="section">
+    <img src="../Images/family.png"" alt="Family">
+    <div class="text">
+      <h2>For Families</h2>
+      <p>
+        Stay informed and assured with timely updates and insights, creating a stronger support system for mothers.
+      </p>
+    </div>
+  </div>
+</div>
+<!-- Intro message -->
+  <div class="intro">
+    <p>
+      We believe every mother deserves safe, timely, and compassionate care. 
+      Matrubandh combines AI innovation with medical expertise to create a stronger 
+      bond between mothers and doctors.
+    </p>
+  </div>
+
+  <!-- Contact Section -->
+  <div class="contact">
+    <h2>Contact Us!!!</h2>
+    <form>
+      <div class="form-group">
+        <input type="email" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <textarea placeholder="Message" required></textarea>
+      </div>
+      <button type="submit" class="send-btn">
+        <!-- Paper Plane Icon (SVG) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+
+  
 <script>
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+const loginBtn = document.querySelector('.login-btn');
+loginBtn.addEventListener('click', (e) => {
+    e.preventDefault(); 
+     window.location.href = "http://localhost:5500/login";  // redirect to login page
+});
+const loginBt = document.querySelector('.cta-button');
+loginBt.addEventListener('click', (e) => {
+    e.preventDefault(); 
+     window.location.href = "http://localhost:5500/login";  // redirect to login page
+});
+
+  // Simple mobile menu toggle functionality
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileToggle.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'white';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.padding = '1rem';
+                navLinks.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
 
 chtbtn = document.querySelector("#forchatbot");
 chatbot = document.querySelector(".chat-widget");
