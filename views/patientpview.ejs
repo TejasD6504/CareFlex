@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatruDaya - Health Dashboard</title>
+    <title>Careflex - Health Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <style>
@@ -448,7 +448,7 @@ body {
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">MatruDaya</div>
+        <div class="logo">Careflex</div>
         <div class="nav-links">
             <a href="#" class="nav-link">Home</a>
             <a href="#" class="nav-link">Monitoring Dashboard</a>
@@ -488,8 +488,8 @@ body {
                 <span class="metric-value" id="RecoveryRate"><%= result.status %></span>
             </div>
             <div class="metric-row">
-                <span class="metric-label">Heart Rate</span>
-                <span class="metric-value">70 BPM</span>
+                <span class="metric-label">EMG</span>
+                <span class="metric-value" id="emgdata"></span>
             </div>
             <div class="metric-row">
                 <span class="metric-label">ECG</span>
@@ -503,10 +503,7 @@ body {
                 <span class="metric-label">Bio-Impeadance</span>
                 <span class="metric-value" id="biodata"></span>
             </div>
-            <div class="metric-row">
-                <span class="metric-label">Blood Pressure</span>
-                <span class="metric-value">80 mmHg</span>
-            </div>
+
             <p class="success-message">Everything Looks great...!! Have a Healthy Day</p>
         </div>
 
@@ -602,6 +599,7 @@ body {
             const  ecgdata  = maindata.ecgdata;
             let Biodata = maindata.latestDistance;
             let gsrdata = maindata.gsrdata;
+            let emgdata = maindata.emgdata;
 
 
             // console.log('Biodata:', Biodata);
@@ -625,17 +623,40 @@ body {
                 document.querySelector("#ecgdata").textContent = "Worst";
             }
 
-            if (Biodata >= 499990) {
-                document.querySelector("#biodata").textContent = "Normal";
-                // document.querySelector("#RecoveryRate").textContent = 'Normal';
-                // document.querySelector("#Recommand").textContent = 'EveryThing is Good! Follow Regular routine';
+            if (Biodata < 499990) {
+    document.querySelector("#biodata").textContent = "Consult";
 
-            } else if (Biodata >= 510000) {
-                document.querySelector("#biodata").textContent = "Consult";
-                // document.querySelector("#RecoveryRate").textContent = 'Critical';
-                // document.querySelector("#Recommand").textContent = 'Need to visit Doctor';
+} else if (Biodata <= <%= threshold.bio_thres %>) {
+    document.querySelector("#biodata").textContent = "Normal";
 
-            } 
+} else if (Biodata >= 510000) {
+    document.querySelector("#biodata").textContent = "Risk";
+}
+
+            // if (Biodata < 499990) {
+            //     document.querySelector("#biodata").textContent = "Consult";
+            //     // document.querySelector("#RecoveryRate").textContent = 'Normal';
+            //     // document.querySelector("#Recommand").textContent = 'EveryThing is Good! Follow Regular routine';
+
+            // } else if (Biodata <= <%= threshold.bio_thres %>) {
+            //     document.querySelector("#biodata").textContent = "Normal";
+            //     // document.querySelector("#RecoveryRate").textContent = 'Critical';
+            //     // document.querySelector("#Recommand").textContent = 'Need to visit Doctor';
+
+            // }else if (Biodata >= 510000) {
+            //     document.querySelector("#biodata").textContent = "Risk";
+            //     // document.querySelector("#RecoveryRate").textContent = 'Critical';
+            //     // document.querySelector("#Recommand").textContent = 'Need to visit Doctor';
+
+            // }  
+             if (emgdata >= 350 && emgdata < 400) {
+                document.querySelector("#emgdata").textContent = "Optimal";
+            } else if (emgdata >= 400 && emgdata <500) {
+                document.querySelector("#emgdata").textContent = "Normal";
+            } else if(emgdata < 500){
+                document.querySelector("#emgdata").textContent = "Worst";
+            }
+
 
             if (gsrdata >= 200 && gsrdata <500) {
                 document.querySelector("#gsrdata").textContent = "No pain";

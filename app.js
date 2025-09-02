@@ -87,14 +87,31 @@ app.get('/doctor/:id', async (req,res) => {
     searid = req.params;   
     console.log(searid.id); 
 
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+
+// Example: 2025-08-30
+
+
+
+
    try {
       connection.query("select * from patient where pat_doc_key = ?", [searid.id], (err1, result1) => {
           if (err1) throw err1;
           connection.query("select * from doctors where doc_key = ?", [searid.id], (err2, result2) => {
             if (err2) throw err2;
+             connection.query("UPDATE doctors SET last_login = ? WHERE doc_key = ?;", [`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,searid.id], (err3, result3) => {
+          if (err3) throw err3;
           res.render("patientList.ejs", {data : result1, doc_data : result2});
       });
     });
+  });
   } catch (err) {
     res.render("error.ejs");
       console.log(err);
@@ -228,15 +245,7 @@ app.get('/patient/:id/report', (req, res) => {
       const currentDate = moment().subtract(5, 'days').format('YYYY-MM-DD');
       console.log("Fetching data for:", currentDate);
 
-      connection.query("SELECT * FROM bio_permanent WHERE date = ?", [currentDate], (err, result) => {
-          if (err) {
-              console.error("Database error:", err);
-              return res.status(500).send("Database error");
-          }
-
-          console.log("Query Result:", result); // Debugging output
-          res.render("report.ejs", { result }); // Ensure it's passed correctly
-      });
+     
 
   } catch (err) {
     res.render("error.ejs",{err : err});
@@ -294,7 +303,7 @@ app.post('/start-monitoring', (req, res) => {
 
                 connection.query(
                     "INSERT INTO pat_threshold (pat_id, bio_thres, EMG_thres, GSR_thres) VALUES (?, ?, ?, ?)",
-                    [id, bioAvg, emgAvg, bioAvg],
+                    [id, bioAvg, emgAvg, gsrAvg],
                     (err, result) => {
                         if (err) {
                             console.error(err);
@@ -340,8 +349,6 @@ app.post('/start-monitoring', (req, res) => {
 
 
 
-
- 
  // Handle WebSocket connections
 function generateDoctorKey() {
    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -558,7 +565,6 @@ const getAccessToken = async () => {
      console.log("GSR data = " ,gsrdata);
      console.log("ECG data = " ,ecgdata);
 
-     // Emit the updated distance to all connected clients
      io.emit("distanceUpdate", {latestDistance,ecgdata, gsrdata});
     return gsrdata;
    } catch (error) {
@@ -749,12 +755,22 @@ app.get('/patient/:id', async (req, res) => {
           });
       }
 
+       connection.query("SELECT * FROM pat_threshold WHERE pat_id = ?", id, (err, result) => {
+          if (err) {
+              console.error("Database error:", err);
+              return res.status(500).send("Database error");
+          }
+
+          console.log("Checkingg Data....:", result);
+          if(result.length === 0) {
+            return res.redirect(`/patient/${id}/threshold`);
+          }
+           res.render("patientpview.ejs", { data1: latestDistance , result : predicteddata ,id  : id , threshold: result[0]});
+      });
       // console.log(predicteddata.data);
 
-      res.render("patientpview.ejs", { data1: latestDistance , result : predicteddata ,id  : id });
-
-      // Using setTimeout instead of setInterval to prevent overlapping calls
      
+
       function updateData() {
         fetchBioData(id);
         setTimeout(updateData, 1000);

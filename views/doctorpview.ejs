@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatruDaya - Health Dashboard</title>
+    <title>Careflex - Health Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <style>
@@ -500,7 +500,7 @@ body {
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">MatruDaya</div>
+        <div class="logo">Careflex</div>
         <div class="nav-links">
             <a href="#" class="nav-link">Home</a>
             <a href="#" class="nav-link">Monitoring Dashboard</a>
@@ -519,7 +519,7 @@ body {
         <div class="main-chart">
             <div class="chart-header">
                 <h2 class="chart-title">Recovery Rate</h2>
-                <h3 id="status"></h3>
+                <h3 id="status">Monitoring....</h3>
                 <p><span id="value"></span></p>
             </div>
             <div class="chart-container">
@@ -533,8 +533,8 @@ body {
                 <span class="metric-value" id="RecoveryRate"><%= result.status %></span>
             </div>
             <div class="metric-row">
-                <span class="metric-label">Heart Rate</span>
-                <span class="metric-value">Normal</span>
+                <span class="metric-label">EMG</span>
+                <span class="metric-value" id="emgRate">Normal</span>
             </div>
             <div class="metric-row">
                 <span class="metric-label">ECG</span>
@@ -667,7 +667,7 @@ body {
 
             // console.log("New Value = ", Biodata);
 
-            statusElement.innerHTML = Biodata <= 499990 ? "Belt not worn..." : "Monitoring";
+            // statusElement.innerHTML = gsrdata >= 250 ? "Belt not worn..." : "Monitoring";
             
             // valueElement.textContent = Biodata;
 
