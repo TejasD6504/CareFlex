@@ -232,3 +232,9 @@ setInterval(getAccessToken, 3500 * 1000);
 
 app.listen(5500);
 
+// {
+//     "version": 2,
+//     "builds": [{ "src": "app.js", "use": "@vercel/node" }],
+//     "routes": [{ "src": "/(.*)", "dest": "app.js" }]
+//   }
+  
